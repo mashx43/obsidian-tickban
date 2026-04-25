@@ -1,8 +1,72 @@
-/*
+.tickban-container {
+	height: 100%;
+	width: 100%;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.tickban-board {
+	display: flex;
+	gap: 16px;
+	height: 100%;
+	width: 100%;
+	padding: 16px;
+	box-sizing: border-box;
+}
 
-If your plugin does not need CSS, delete this file.
+.tickban-column {
+	&[data-hover] {
+		background-color: var(--background-modifier-hover);
+	}
 
-*/
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--background-secondary-alt);
+	padding: 8px;
+	border-radius: 8px;
+	gap: 8px;
+}
+
+.tickban-column-title {
+	margin: 0 0 8px 0;
+	font-size: 1.2em;
+}
+
+.tickban-column-content {
+	overflow-y: "auto";
+	flex: 1;
+}
+
+.tickban-card {
+	&[data-dragging] {
+		opacity: 0.5;
+	}
+
+	padding: 8px;
+	margin: 4px 0;
+	background-color: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	cursor: grab;
+}
+
+.tickban-card-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-top: 4px;
+}
+
+.tickban-card-tag {
+	font-size: 0.75em;
+	color: var(--text-accent);
+	background: var(--background-primary);
+	padding: 1px 4px;
+	border-radius: 3px;
+	border: 1px solid var(--background-modifier-border);
+}
+
+.tickban-card-meta {
+	font-size: 0.7em;
+	color: var(--text-muted);
+	margin-top: 4px;
+}

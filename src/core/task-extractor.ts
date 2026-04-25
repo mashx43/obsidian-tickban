@@ -1,0 +1,93 @@
+import type { App } from "obsidian";
+
+export interface TickBanTask {
+	id: string; // `${file.path}:${line}`
+	filePath: string;
+	line: number;
+	text: string;
+	status: "todo" | "doing" | "done";
+	tags: string[];
+}
+
+export type TaskExtractor = (
+	includeGlob: string,
+	excludeGlob: string,
+) => Promise<TickBanTask[]>;
+
+// Simple glob to regex converter
+function globToRegExp(glob: string): RegExp {
+	const escaped = glob.replace(/[.+^${}()|[\]\\]/g, "\\$&");
+	const regexStr = "^" + escaped.replace(/\*/g, ".*").replace(/\?/g, ".") + "$";
+	return new RegExp(regexStr);
+}
+
+export function createTaskExtractor(app: App): TaskExtractor {
+	return async (
+		includeGlob: string,
+		excludeGlob: string,
+	): Promise<TickBanTask[]> => {
+		const files = app.vault.getMarkdownFiles();
+		const includeRegex = includeGlob ? globToRegExp(includeGlob) : null;
+		const excludeRegex = excludeGlob ? globToRegExp(excludeGlob) : null;
+
+		const tasks: TickBanTask[] = [];
+
+		for (const file of files) {
+			if (includeRegex && !includeRegex.test(file.path)) continue;
+			if (excludeRegex && excludeRegex.test(file.path)) continue;
+
+			const cache = app.metadataCache.getFileCache(file);
+			if (!cache || !cache.listItems) continue;
+
+			const taskItems = cache.listItems.filter(
+				(item) => item.task !== undefined,
+			);
+			if (taskItems.length === 0) continue;
+
+			const content = await app.vault.cachedRead(file);
+			const lines = content.split("\n");
+
+			for (const item of taskItems) {
+				const lineNum = item.position.start.line;
+				const lineText = lines[lineNum];
+				if (!lineText) continue;
+
+				let status: TickBanTask["status"];
+				if (item.task === " " || item.task === "") {
+					status = "todo";
+				} else if (item.task === "/") {
+					status = "doing";
+				} else if (item.task?.toLowerCase() === "x") {
+					status = "done";
+				} else {
+					continue; // Ignore other statuses like '-', '>', etc.
+				}
+
+				// Extract text after the checkbox
+				const match = lineText.match(/-\s*\[.*?\]\s*(.*)/);
+				let text = match && match[1] ? match[1].trim() : lineText.trim();
+
+				// Extract tags (#tag) and remove them from text for cleaner display
+				const tags: string[] = [];
+				const tagMatches = text.match(
+					/(?:^|\s)#([\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF/-]+)/g,
+				);
+				for (const tag of tagMatches ?? []) {
+					tags.push(tag);
+					text = text.replace(tag, "").trim();
+				}
+
+				tasks.push({
+					id: `${file.path}:${lineNum}`,
+					filePath: file.path,
+					line: lineNum,
+					text,
+					status,
+					tags,
+				});
+			}
+		}
+
+		return tasks;
+	};
+}
