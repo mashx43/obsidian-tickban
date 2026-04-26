@@ -65,9 +65,6 @@ export class KanbanView extends ItemView {
 		if (!container) return;
 		container.empty();
 
-		const mountEl = container.createDiv();
-		mountEl.addClass("tickban-container");
-
 		const extractor = createTaskExtractor(this.app);
 		const updater = createTaskUpdater(this.app);
 
@@ -77,7 +74,7 @@ export class KanbanView extends ItemView {
 					loader: () => extractor(this.includeGlob, this.excludeGlob),
 					updater,
 				}),
-			mountEl,
+			container,
 		);
 	}
 

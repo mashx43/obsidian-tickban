@@ -58,12 +58,14 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 	}
 
 	return (
-		<div class="tickban-board">
-			<For each={COLUMNS}>
-				{(column) => (
-					<Column {...column} tasks={filterByStatus(column.status)} />
-				)}
-			</For>
+		<div class="tickban-container">
+			<div class="tickban-board">
+				<For each={COLUMNS}>
+					{(column) => (
+						<Column {...column} tasks={filterByStatus(column.status)} />
+					)}
+				</For>
+			</div>
 		</div>
 	);
 }
