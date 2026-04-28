@@ -8,7 +8,7 @@ interface Props {
 
 export function TagToken(props: Props): JSX.Element {
 	return (
-		<span class="tickban-tag-token" role="listitem">
+		<span class="tb-tag" role="listitem">
 			{props.tag}
 			<button
 				type="button"

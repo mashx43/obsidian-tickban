@@ -16,7 +16,8 @@ export function TagFilter(props: TagFilterProps) {
 	let containerRef: HTMLLabelElement | undefined;
 	const [inputValue, setInputValue] = createSignal("");
 	const popover = usePopover();
-	const listboxId = "tickban-tag-listbox";
+	const inputId = "tb-tag-input";
+	const listboxId = "tb-tag-listbox";
 
 	const filteredSuggestions = createMemo(() => {
 		const query = inputValue().toLowerCase();
@@ -94,21 +95,21 @@ export function TagFilter(props: TagFilterProps) {
 		<>
 			<label
 				ref={containerRef}
-				for="tickban-tag-input"
-				class="tickban-tag-filter"
+				for={inputId}
+				class="tb-tag-filter"
 				onFocusOut={handleFocusOut}
 				onKeyDown={handleKeyDown}
 				onPointerDown={(e) => {
 					if (popover.isOpen()) e.preventDefault();
 				}}
 			>
-				<div class="tickban-tag-list" role="list" aria-label="Selected tags">
+				<div class="tb-tag-list" role="list" aria-label="Selected tags">
 					<For each={props.activeTags}>
 						{(tag) => <TagToken tag={tag} onRemove={toggleTag} />}
 					</For>
 					<input
-						id="tickban-tag-input"
-						class="tickban-tag-input"
+						id={inputId}
+						class="tb-tag-input"
 						type="search"
 						spellcheck={false}
 						autocomplete="off"
@@ -148,20 +149,20 @@ export function TagFilter(props: TagFilterProps) {
 				id={listboxId}
 				ref={popover.setRef}
 				role="listbox"
-				class="tickban-tag-dropdown"
+				class="tb-tag-dropdown"
 				popover="manual"
 				onFocusOut={handleFocusOut}
 				onPointerDown={(e) => e.preventDefault()}
 			>
 				<For
 					each={filteredSuggestions()}
-					fallback={<li class="tickban-tag-option">No suggestions</li>}
+					fallback={<li class="tb-tag-option">No suggestions</li>}
 				>
 					{(tag) => (
 						<li
 							id={createTagOptionId(tag)}
 							role="option"
-							class="tickban-tag-option"
+							class="tb-tag-option"
 							aria-selected={active() === tag}
 							onMouseMove={[setActive, tag]}
 							onClick={[addTag, tag]}

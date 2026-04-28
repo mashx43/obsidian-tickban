@@ -25,11 +25,11 @@ export function Card(props: CardProps) {
 	});
 
 	return (
-		<div ref={ref} class="tickban-card" bool:data-dragging={isDragging()}>
-			<div class="tickban-card-text">{props.task.text}</div>
+		<div ref={ref} class="tb-card" bool:data-dragging={isDragging()}>
+			<div class="tb-card-text">{props.task.text}</div>
 			<button
 				type="button"
-				class="tickban-card-open-button clickable-icon"
+				class="tb-card-open-button clickable-icon"
 				aria-label="Open task in file"
 				onClick={(e) => {
 					e.stopPropagation();
@@ -40,12 +40,12 @@ export function Card(props: CardProps) {
 			</button>
 
 			<Show when={props.task.tags.length > 0}>
-				<div class="tickban-card-tags">
+				<div class="tb-card-tags">
 					<For each={props.task.tags}>
 						{(tag) => (
 							<button
 								type="button"
-								class="tag clickable-icon"
+								class="tb-tag clickable-icon"
 								tabIndex={-1}
 								onClick={(e) => {
 									e.stopPropagation();
@@ -59,7 +59,7 @@ export function Card(props: CardProps) {
 				</div>
 			</Show>
 
-			<div class="tickban-card-meta">{props.task.filePath}</div>
+			<div class="tb-card-meta">{props.task.filePath}</div>
 		</div>
 	);
 }

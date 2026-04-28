@@ -97,14 +97,14 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 	}
 
 	return (
-		<div class="tickban-container">
+		<div class="tb-container">
 			<TagFilter
 				store={tagStore}
 				setStore={setTagStore}
 				activeTags={activeTags()}
 				allTags={allTags()}
 			/>
-			<div class="tickban-board">
+			<div class="tb-board">
 				<For each={COLUMNS}>
 					{(column) => (
 						<Column

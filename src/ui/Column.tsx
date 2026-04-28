@@ -28,11 +28,11 @@ export function Column(props: ColumnProps) {
 	});
 
 	return (
-		<div ref={ref} class="tickban-column" bool:data-hover={isHovered()}>
-			<h3 class="tickban-column-title">
+		<div ref={ref} class="tb-column" bool:data-hover={isHovered()}>
+			<h3 class="tb-column-title">
 				{props.title} ({props.tasks.length})
 			</h3>
-			<div class="tickban-column-content">
+			<div class="tb-column-content">
 				<For each={props.tasks}>
 					{(task) => (
 						<Card

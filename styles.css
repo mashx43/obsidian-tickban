@@ -1,17 +1,15 @@
-:root {
-	.tickban-container {
-		--icon-size: var(--icon-s);
-		--focus-ring-shadow: 0 0 0 var(--input-border-width-focus)
-			var(--background-modifier-border-focus);
+.tb-container {
+	--icon-size: var(--icon-s);
+	--focus-ring-shadow: 0 0 0 var(--input-border-width-focus)
+		var(--background-modifier-border-focus);
 
-		height: 100%;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-	}
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
 
 	/* Default Components */
-	.tag {
+	.tb-tag {
 		&:hover {
 			color: var(--tag-color-hover);
 			text-decoration: var(--tag-decoration-hover);
@@ -19,6 +17,9 @@
 			border-color: var(--tag-border-color-hover);
 		}
 
+		display: inline-flex;
+		align-items: center;
+		gap: var(--size-4-1);
 		font-size: var(--tag-size);
 		color: var(--tag-color);
 		text-decoration: var(--tag-decoration);
@@ -30,22 +31,22 @@
 	}
 
 	/* Kanban Styles */
-	.tickban-board {
+	.tb-board {
 		display: flex;
 		gap: var(--size-4-3);
 		margin-top: var(--size-4-4);
 		overflow-x: auto;
 	}
 
-	.tickban-column {
+	.tb-column {
 		&[data-hover] {
 			--hover-color: hsla(var(--interactive-accent-hsl), 0.1);
 
-			.tickban-column-title {
+			.tb-column-title {
 				color: var(--text-accent);
 			}
 
-			.tickban-card:not([data-dragging]) {
+			.tb-card:not([data-dragging]) {
 				background-color: color-mix(
 					in oklab,
 					var(--hover-color) 20%,
@@ -64,12 +65,12 @@
 		border-radius: var(--radius-m);
 	}
 
-	.tickban-column-title {
+	.tb-column-title {
 		margin: 0 0 var(--size-4-3) 0;
 		font-size: var(--font-ui-large);
 	}
 
-	.tickban-column-content {
+	.tb-column-content {
 		display: flex;
 		flex-direction: column;
 		gap: var(--size-4-2);
@@ -79,8 +80,8 @@
 		margin: calc(var(--input-border-width-focus) * -1);
 	}
 
-	.tickban-card {
-		&:hover .tickban-card-open-button {
+	.tb-card {
+		&:hover .tb-card-open-button {
 			opacity: 1;
 		}
 
@@ -104,11 +105,11 @@
 		cursor: grab;
 	}
 
-	.tickban-card-text {
+	.tb-card-text {
 		padding-inline-end: var(--size-4-2);
 	}
 
-	.tickban-card-open-button {
+	.tb-card-open-button {
 		&:focus-visible {
 			box-shadow: none;
 		}
@@ -121,7 +122,7 @@
 		cursor: pointer;
 	}
 
-	.tickban-card-tags {
+	.tb-card-tags {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--size-4-1);
@@ -132,15 +133,15 @@
 		cursor: pointer;
 	}
 
-	.tickban-card-meta {
+	.tb-card-meta {
 		font-size: var(--font-ui-smaller);
 		color: var(--text-muted);
 		margin-top: var(--size-4-1);
 	}
 
 	/* Tag Filter Styles */
-	.tickban-tag-filter {
-		anchor-name: --tickban-tag-dropdown-anchor;
+	.tb-tag-filter {
+		anchor-name: --tb-tag-dropdown-anchor;
 
 		&:focus-within {
 			border-color: var(--background-modifier-border-focus);
@@ -164,7 +165,7 @@
 		min-height: var(--size-4-9);
 	}
 
-	.tickban-tag-list {
+	.tb-tag-list {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--size-4-1);
@@ -173,20 +174,7 @@
 		align-items: center;
 	}
 
-	.tickban-tag-token {
-		display: inline-flex;
-		align-items: center;
-		background-color: var(--tag-background);
-		color: var(--tag-color);
-		padding: 0 var(--size-4-2);
-		border-radius: var(--radius-l);
-		font-size: var(--tag-size);
-		gap: var(--size-4-1);
-		text-decoration: var(--tag-decoration);
-		border: var(--tag-border-width) solid var(--tag-border-color);
-	}
-
-	.tickban-tag-input {
+	.tb-tag-input {
 		flex: 1;
 		min-width: 100px;
 		border: none !important;
@@ -197,7 +185,7 @@
 		margin: 0 !important;
 	}
 
-	.tickban-tag-dropdown {
+	.tb-tag-dropdown {
 		background-color: var(--background-primary);
 		border: var(--border-width) solid var(--background-modifier-border);
 		border-radius: var(--radius-s);
@@ -206,14 +194,14 @@
 		overflow-y: auto;
 
 		/* Anchor Positioning */
-		position-anchor: --tickban-tag-dropdown-anchor;
+		position-anchor: --tb-tag-dropdown-anchor;
 		position-area: bottom span-right;
 		width: anchor-size(width);
 		padding: 0;
 		margin: var(--size-4-2) 0 0 0;
 	}
 
-	.tickban-tag-option {
+	.tb-tag-option {
 		&[aria-selected] {
 			cursor: pointer;
 		}
