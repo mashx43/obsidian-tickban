@@ -1,8 +1,18 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { TaskUpdater } from "core/task-updater";
-import { createSignal, For, type JSX, onCleanup, onMount } from "solid-js";
+import {
+	createEffect,
+	createMemo,
+	createSignal,
+	For,
+	type JSX,
+	onCleanup,
+	onMount,
+} from "solid-js";
+import { createStore } from "solid-js/store";
 import type { TickBanTask } from "../core/task-extractor";
 import { Column } from "./Column";
+import { TagFilter } from "./TagFilter";
 
 const COLUMNS: { status: TickBanTask["status"]; title: string }[] = [
 	{ status: "todo", title: "ToDo" },
@@ -17,11 +27,26 @@ interface KanbanBoardProps {
 
 export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 	const [tasks, setTasks] = createSignal<TickBanTask[]>([]);
+	const [tagStore, setTagStore] = createStore<Record<string, boolean>>({});
+
+	const allTags = createMemo(() => Object.keys(tagStore).sort());
+	const activeTags = createMemo(() => allTags().filter((tag) => tagStore[tag]));
 
 	async function loadTasks() {
 		const extracted = await props.loader();
 		setTasks(extracted);
 	}
+
+	// When a task is updated, add the new tag to the Store.
+	createEffect(() => {
+		for (const task of tasks()) {
+			for (const tag of task.tags) {
+				if (tagStore[tag] === undefined) {
+					setTagStore(tag, false);
+				}
+			}
+		}
+	});
 
 	onMount(() => {
 		void loadTasks();
@@ -53,12 +78,27 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 		onCleanup(() => cleanup());
 	});
 
+	const filteredTasks = createMemo(() => {
+		const tags = activeTags();
+
+		if (tags.length === 0) return tasks();
+		return tasks().filter((task) =>
+			tags.every((tag) => task.tags.includes(tag)),
+		);
+	});
+
 	function filterByStatus(status: TickBanTask["status"]): TickBanTask[] {
-		return tasks().filter((t) => t.status === status);
+		return filteredTasks().filter((t) => t.status === status);
 	}
 
 	return (
 		<div class="tickban-container">
+			<TagFilter
+				store={tagStore}
+				setStore={setTagStore}
+				activeTags={activeTags()}
+				allTags={allTags()}
+			/>
 			<div class="tickban-board">
 				<For each={COLUMNS}>
 					{(column) => (

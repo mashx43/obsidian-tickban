@@ -68,5 +68,96 @@
 .tickban-card-meta {
 	font-size: 0.7em;
 	color: var(--text-muted);
-	margin-top: 4px;
+}
+
+/* Tag Filter Styles */
+.tickban-tag-filter {
+	anchor-name: --tickban-tag-dropdown-anchor;
+
+	&:focus-within {
+		border-color: var(--background-modifier-border-focus);
+		transition:
+			box-shadow 0.15s ease-in-out,
+			border 0.15s ease-in-out;
+	}
+
+	&:has(:focus-visible) {
+		box-shadow: 0 0 0 var(--input-border-width-focus)
+			var(--background-modifier-border-focus);
+	}
+
+	display: flex;
+	padding: var(--size-4-1) var(--size-4-2);
+	background-color: var(--background-modifier-form-field);
+	border: var(--input-border-width) solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+	align-items: center;
+	gap: var(--size-4-1);
+	flex-shrink: 0;
+	min-height: var(--size-4-9);
+}
+
+.tickban-tag-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-1);
+	flex: 1;
+	min-width: 0;
+	align-items: center;
+}
+
+.tickban-tag-token {
+	display: inline-flex;
+	align-items: center;
+	background-color: var(--tag-background);
+	color: var(--tag-color);
+	padding: 0 var(--size-4-2);
+	border-radius: var(--radius-l);
+	font-size: var(--tag-size);
+	gap: var(--size-4-1);
+	text-decoration: var(--tag-decoration);
+	border: var(--tag-border-width) solid var(--tag-border-color);
+}
+
+.tickban-tag-input {
+	flex: 1;
+	min-width: 100px;
+	border: none !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	height: var(--size-4-6);
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.tickban-tag-dropdown {
+	background-color: var(--background-primary);
+	border: var(--border-width) solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+	box-shadow: var(--shadow-s);
+	max-height: 200px;
+	overflow-y: auto;
+
+	/* Anchor Positioning */
+	position-anchor: --tickban-tag-dropdown-anchor;
+	position-area: bottom span-right;
+	width: anchor-size(width);
+	padding: 0;
+	margin: var(--size-4-2) 0 0 0;
+}
+
+.tickban-tag-option {
+	&[aria-selected] {
+		cursor: pointer;
+	}
+
+	&:not([aria-selected]) {
+		color: var(--text-muted);
+	}
+
+	&[aria-selected="true"] {
+		background-color: var(--background-modifier-hover);
+	}
+
+	padding: var(--size-4-2) var(--size-4-3);
 }
