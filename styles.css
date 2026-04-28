@@ -8,13 +8,21 @@
 	display: flex;
 	flex-direction: column;
 
-	/* Default Components */
+	/* Components */
 	.tb-tag {
 		&:hover {
 			color: var(--tag-color-hover);
 			text-decoration: var(--tag-decoration-hover);
 			background-color: var(--tag-background-hover);
 			border-color: var(--tag-border-color-hover);
+		}
+
+		& .clickable-icon {
+			padding: var(--size-2-1);
+		}
+
+		& .svg-icon {
+			--icon-size: var(--icon-xs);
 		}
 
 		display: inline-flex;
@@ -30,7 +38,25 @@
 		font-weight: var(--tag-weight);
 	}
 
-	/* Kanban Styles */
+	.tb-text-input {
+		&:focus-within {
+			border-color: var(--background-modifier-border-focus);
+			transition:
+				box-shadow 0.15s ease-in-out,
+				border 0.15s ease-in-out;
+		}
+
+		&:has(:focus-visible) {
+			box-shadow: var(--focus-ring-shadow);
+		}
+
+		/* height: var(--input-height); */
+		border-radius: var(--input-radius);
+		font-weight: var(--input-font-weight);
+		border-width: var(--input-border-width);
+	}
+
+	/* Kanban */
 	.tb-board {
 		display: flex;
 		gap: var(--size-4-3);
@@ -139,29 +165,16 @@
 		margin-top: var(--size-4-1);
 	}
 
-	/* Tag Filter Styles */
+	/* Tag Filter */
 	.tb-tag-filter {
 		anchor-name: --tb-tag-dropdown-anchor;
 
-		&:focus-within {
-			border-color: var(--background-modifier-border-focus);
-			transition:
-				box-shadow 0.15s ease-in-out,
-				border 0.15s ease-in-out;
-		}
-
-		&:has(:focus-visible) {
-			box-shadow: var(--focus-ring-shadow);
-		}
-
 		display: flex;
-		padding: var(--size-4-1) var(--size-4-2);
-		background-color: var(--background-modifier-form-field);
-		border: var(--input-border-width) solid var(--background-modifier-border);
-		border-radius: var(--radius-s);
 		align-items: center;
 		gap: var(--size-4-1);
-		flex-shrink: 0;
+		background-color: var(--background-modifier-form-field);
+		border: solid var(--background-modifier-border);
+		padding: var(--size-4-1) var(--size-4-2);
 		min-height: var(--size-4-9);
 	}
 

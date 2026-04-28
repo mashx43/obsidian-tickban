@@ -96,7 +96,7 @@ export function TagFilter(props: TagFilterProps) {
 			<label
 				ref={containerRef}
 				for={inputId}
-				class="tb-tag-filter"
+				class="tb-tag-filter tb-text-input"
 				onFocusOut={handleFocusOut}
 				onKeyDown={handleKeyDown}
 				onPointerDown={(e) => {
