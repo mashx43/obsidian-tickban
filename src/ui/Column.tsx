@@ -8,6 +8,7 @@ interface ColumnProps {
 	title: string;
 	tasks: TickBanTask[];
 	onTagClick: (tag: string) => void;
+	onOpenTask: (task: TickBanTask) => void;
 }
 
 export function Column(props: ColumnProps) {
@@ -33,7 +34,13 @@ export function Column(props: ColumnProps) {
 			</h3>
 			<div class="tickban-column-content">
 				<For each={props.tasks}>
-					{(task) => <Card task={task} onTagClick={props.onTagClick} />}
+					{(task) => (
+						<Card
+							task={task}
+							onTagClick={props.onTagClick}
+							onOpenTask={props.onOpenTask}
+						/>
+					)}
 				</For>
 			</div>
 		</div>

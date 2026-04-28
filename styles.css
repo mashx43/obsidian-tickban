@@ -1,11 +1,32 @@
 :root {
 	.tickban-container {
 		--icon-size: var(--icon-s);
+		--focus-ring-shadow: 0 0 0 var(--input-border-width-focus)
+			var(--background-modifier-border-focus);
 
 		height: 100%;
 		width: 100%;
 		display: flex;
 		flex-direction: column;
+	}
+
+	/* Default Components */
+	.tag {
+		&:hover {
+			color: var(--tag-color-hover);
+			text-decoration: var(--tag-decoration-hover);
+			background-color: var(--tag-background-hover);
+			border-color: var(--tag-border-color-hover);
+		}
+
+		font-size: var(--tag-size);
+		color: var(--tag-color);
+		text-decoration: var(--tag-decoration);
+		background-color: var(--tag-background);
+		border: var(--tag-border-width) solid var(--tag-border-color);
+		padding: var(--tag-padding-y) var(--tag-padding-x);
+		border-radius: var(--tag-radius);
+		font-weight: var(--tag-weight);
 	}
 
 	/* Kanban Styles */
@@ -53,9 +74,20 @@
 		flex-direction: column;
 		gap: var(--size-4-2);
 		overflow-y: auto;
+
+		padding: var(--input-border-width-focus);
+		margin: calc(var(--input-border-width-focus) * -1);
 	}
 
 	.tickban-card {
+		&:hover .tickban-card-open-button {
+			opacity: 1;
+		}
+
+		&:has(:focus-visible) {
+			box-shadow: var(--focus-ring-shadow);
+		}
+
 		&[data-dragging] {
 			color: var(--text-on-accent);
 			background-color: var(--interactive-accent);
@@ -64,11 +96,29 @@
 			}
 		}
 
+		position: relative;
 		padding: var(--size-4-2);
 		background-color: var(--background-primary);
 		border: var(--border-width) solid var(--background-modifier-border);
 		border-radius: var(--radius-s);
 		cursor: grab;
+	}
+
+	.tickban-card-text {
+		padding-inline-end: var(--size-4-2);
+	}
+
+	.tickban-card-open-button {
+		&:focus-visible {
+			box-shadow: none;
+		}
+
+		position: absolute;
+		top: var(--size-4-1);
+		right: var(--size-4-1);
+		opacity: 0;
+		color: var(--link-color);
+		cursor: pointer;
 	}
 
 	.tickban-card-tags {
@@ -78,10 +128,8 @@
 		margin-top: var(--size-4-1);
 	}
 
-	.tickban-card-tag {
-		font-size: var(--font-ui-smaller);
-		color: var(--text-accent);
-		border: var(--border-width) solid var(--background-modifier-border);
+	.tag.clickable-icon {
+		cursor: pointer;
 	}
 
 	.tickban-card-meta {
@@ -102,8 +150,7 @@
 		}
 
 		&:has(:focus-visible) {
-			box-shadow: 0 0 0 var(--input-border-width-focus)
-				var(--background-modifier-border-focus);
+			box-shadow: var(--focus-ring-shadow);
 		}
 
 		display: flex;

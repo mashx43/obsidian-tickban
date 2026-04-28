@@ -23,6 +23,7 @@ const COLUMNS: { status: TickBanTask["status"]; title: string }[] = [
 interface KanbanBoardProps {
 	loader: () => Promise<TickBanTask[]>;
 	updater: TaskUpdater;
+	onOpenTask: (task: TickBanTask) => void;
 }
 
 export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
@@ -110,6 +111,7 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 							{...column}
 							tasks={filterByStatus(column.status)}
 							onTagClick={onTagClick}
+							onOpenTask={props.onOpenTask}
 						/>
 					)}
 				</For>
