@@ -91,6 +91,10 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 		return filteredTasks().filter((t) => t.status === status);
 	}
 
+	function onTagClick(tag: string): void {
+		setTagStore(tag, true);
+	}
+
 	return (
 		<div class="tickban-container">
 			<TagFilter
@@ -102,7 +106,11 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 			<div class="tickban-board">
 				<For each={COLUMNS}>
 					{(column) => (
-						<Column {...column} tasks={filterByStatus(column.status)} />
+						<Column
+							{...column}
+							tasks={filterByStatus(column.status)}
+							onTagClick={onTagClick}
+						/>
 					)}
 				</For>
 			</div>

@@ -1,5 +1,5 @@
-import { createSignal, onMount, onCleanup, For } from "solid-js";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { createSignal, For, onCleanup, onMount } from "solid-js";
 import { TickBanTask } from "../core/task-extractor";
 import { Card } from "./Card";
 
@@ -7,6 +7,7 @@ interface ColumnProps {
 	status: TickBanTask["status"];
 	title: string;
 	tasks: TickBanTask[];
+	onTagClick: (tag: string) => void;
 }
 
 export function Column(props: ColumnProps) {
@@ -31,7 +32,9 @@ export function Column(props: ColumnProps) {
 				{props.title} ({props.tasks.length})
 			</h3>
 			<div class="tickban-column-content">
-				<For each={props.tasks}>{(task) => <Card task={task} />}</For>
+				<For each={props.tasks}>
+					{(task) => <Card task={task} onTagClick={props.onTagClick} />}
+				</For>
 			</div>
 		</div>
 	);

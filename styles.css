@@ -81,8 +81,6 @@
 	.tickban-card-tag {
 		font-size: var(--font-ui-smaller);
 		color: var(--text-accent);
-		padding: var(--size-2-1) var(--size-4-1);
-		border-radius: var(--radius-s);
 		border: var(--border-width) solid var(--background-modifier-border);
 	}
 
