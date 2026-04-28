@@ -1,163 +1,186 @@
-.tickban-container {
-	height: 100%;
-	width: 100%;
-}
+:root {
+	.tickban-container {
+		--icon-size: var(--icon-s);
 
-.tickban-board {
-	display: flex;
-	gap: 16px;
-	height: 100%;
-	width: 100%;
-	padding: 16px;
-	box-sizing: border-box;
-}
-
-.tickban-column {
-	&[data-hover] {
-		background-color: var(--background-modifier-hover);
+		height: 100%;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
 	}
 
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	background-color: var(--background-secondary-alt);
-	padding: 8px;
-	border-radius: 8px;
-	gap: 8px;
-}
-
-.tickban-column-title {
-	margin: 0 0 8px 0;
-	font-size: 1.2em;
-}
-
-.tickban-column-content {
-	overflow-y: "auto";
-	flex: 1;
-}
-
-.tickban-card {
-	&[data-dragging] {
-		opacity: 0.5;
+	/* Kanban Styles */
+	.tickban-board {
+		display: flex;
+		gap: var(--size-4-3);
+		margin-top: var(--size-4-4);
+		overflow-x: auto;
 	}
 
-	padding: 8px;
-	margin: 4px 0;
-	background-color: var(--background-secondary);
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 4px;
-	cursor: grab;
-}
+	.tickban-column {
+		&[data-hover] {
+			--hover-color: hsla(var(--interactive-accent-hsl), 0.1);
 
-.tickban-card-tags {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	margin-top: 4px;
-}
+			.tickban-column-title {
+				color: var(--text-accent);
+			}
 
-.tickban-card-tag {
-	font-size: 0.75em;
-	color: var(--text-accent);
-	background: var(--background-primary);
-	padding: 1px 4px;
-	border-radius: 3px;
-	border: 1px solid var(--background-modifier-border);
-}
+			.tickban-card:not([data-dragging]) {
+				background-color: color-mix(
+					in oklab,
+					var(--hover-color) 20%,
+					var(--background-primary)
+				);
+			}
 
-.tickban-card-meta {
-	font-size: 0.7em;
-	color: var(--text-muted);
-}
+			background-color: var(--hover-color);
+		}
 
-/* Tag Filter Styles */
-.tickban-tag-filter {
-	anchor-name: --tickban-tag-dropdown-anchor;
-
-	&:focus-within {
-		border-color: var(--background-modifier-border-focus);
-		transition:
-			box-shadow 0.15s ease-in-out,
-			border 0.15s ease-in-out;
+		width: 280px;
+		display: flex;
+		flex-direction: column;
+		background-color: var(--background-primary-alt);
+		padding: var(--size-4-3);
+		border-radius: var(--radius-m);
 	}
 
-	&:has(:focus-visible) {
-		box-shadow: 0 0 0 var(--input-border-width-focus)
-			var(--background-modifier-border-focus);
+	.tickban-column-title {
+		margin: 0 0 var(--size-4-3) 0;
+		font-size: var(--font-ui-large);
 	}
 
-	display: flex;
-	padding: var(--size-4-1) var(--size-4-2);
-	background-color: var(--background-modifier-form-field);
-	border: var(--input-border-width) solid var(--background-modifier-border);
-	border-radius: var(--radius-s);
-	align-items: center;
-	gap: var(--size-4-1);
-	flex-shrink: 0;
-	min-height: var(--size-4-9);
-}
-
-.tickban-tag-list {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--size-4-1);
-	flex: 1;
-	min-width: 0;
-	align-items: center;
-}
-
-.tickban-tag-token {
-	display: inline-flex;
-	align-items: center;
-	background-color: var(--tag-background);
-	color: var(--tag-color);
-	padding: 0 var(--size-4-2);
-	border-radius: var(--radius-l);
-	font-size: var(--tag-size);
-	gap: var(--size-4-1);
-	text-decoration: var(--tag-decoration);
-	border: var(--tag-border-width) solid var(--tag-border-color);
-}
-
-.tickban-tag-input {
-	flex: 1;
-	min-width: 100px;
-	border: none !important;
-	background: transparent !important;
-	box-shadow: none !important;
-	height: var(--size-4-6);
-	padding: 0 !important;
-	margin: 0 !important;
-}
-
-.tickban-tag-dropdown {
-	background-color: var(--background-primary);
-	border: var(--border-width) solid var(--background-modifier-border);
-	border-radius: var(--radius-s);
-	box-shadow: var(--shadow-s);
-	max-height: 200px;
-	overflow-y: auto;
-
-	/* Anchor Positioning */
-	position-anchor: --tickban-tag-dropdown-anchor;
-	position-area: bottom span-right;
-	width: anchor-size(width);
-	padding: 0;
-	margin: var(--size-4-2) 0 0 0;
-}
-
-.tickban-tag-option {
-	&[aria-selected] {
-		cursor: pointer;
+	.tickban-column-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--size-4-2);
+		overflow-y: auto;
 	}
 
-	&:not([aria-selected]) {
+	.tickban-card {
+		&[data-dragging] {
+			color: var(--text-on-accent);
+			background-color: var(--interactive-accent);
+			* {
+				color: inherit;
+			}
+		}
+
+		padding: var(--size-4-2);
+		background-color: var(--background-primary);
+		border: var(--border-width) solid var(--background-modifier-border);
+		border-radius: var(--radius-s);
+		cursor: grab;
+	}
+
+	.tickban-card-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--size-4-1);
+		margin-top: var(--size-4-1);
+	}
+
+	.tickban-card-tag {
+		font-size: var(--font-ui-smaller);
+		color: var(--text-accent);
+		padding: var(--size-2-1) var(--size-4-1);
+		border-radius: var(--radius-s);
+		border: var(--border-width) solid var(--background-modifier-border);
+	}
+
+	.tickban-card-meta {
+		font-size: var(--font-ui-smaller);
 		color: var(--text-muted);
+		margin-top: var(--size-4-1);
 	}
 
-	&[aria-selected="true"] {
-		background-color: var(--background-modifier-hover);
+	/* Tag Filter Styles */
+	.tickban-tag-filter {
+		anchor-name: --tickban-tag-dropdown-anchor;
+
+		&:focus-within {
+			border-color: var(--background-modifier-border-focus);
+			transition:
+				box-shadow 0.15s ease-in-out,
+				border 0.15s ease-in-out;
+		}
+
+		&:has(:focus-visible) {
+			box-shadow: 0 0 0 var(--input-border-width-focus)
+				var(--background-modifier-border-focus);
+		}
+
+		display: flex;
+		padding: var(--size-4-1) var(--size-4-2);
+		background-color: var(--background-modifier-form-field);
+		border: var(--input-border-width) solid var(--background-modifier-border);
+		border-radius: var(--radius-s);
+		align-items: center;
+		gap: var(--size-4-1);
+		flex-shrink: 0;
+		min-height: var(--size-4-9);
 	}
 
-	padding: var(--size-4-2) var(--size-4-3);
+	.tickban-tag-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--size-4-1);
+		flex: 1;
+		min-width: 0;
+		align-items: center;
+	}
+
+	.tickban-tag-token {
+		display: inline-flex;
+		align-items: center;
+		background-color: var(--tag-background);
+		color: var(--tag-color);
+		padding: 0 var(--size-4-2);
+		border-radius: var(--radius-l);
+		font-size: var(--tag-size);
+		gap: var(--size-4-1);
+		text-decoration: var(--tag-decoration);
+		border: var(--tag-border-width) solid var(--tag-border-color);
+	}
+
+	.tickban-tag-input {
+		flex: 1;
+		min-width: 100px;
+		border: none !important;
+		background: transparent !important;
+		box-shadow: none !important;
+		height: var(--size-4-6);
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+	.tickban-tag-dropdown {
+		background-color: var(--background-primary);
+		border: var(--border-width) solid var(--background-modifier-border);
+		border-radius: var(--radius-s);
+		box-shadow: var(--shadow-s);
+		max-height: 200px;
+		overflow-y: auto;
+
+		/* Anchor Positioning */
+		position-anchor: --tickban-tag-dropdown-anchor;
+		position-area: bottom span-right;
+		width: anchor-size(width);
+		padding: 0;
+		margin: var(--size-4-2) 0 0 0;
+	}
+
+	.tickban-tag-option {
+		&[aria-selected] {
+			cursor: pointer;
+		}
+
+		&:not([aria-selected]) {
+			color: var(--text-muted);
+		}
+
+		&[aria-selected="true"] {
+			background-color: var(--background-modifier-hover);
+		}
+
+		padding: var(--size-4-2) var(--size-4-3);
+	}
 }
