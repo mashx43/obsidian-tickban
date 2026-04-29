@@ -9,8 +9,6 @@ interface ColumnProps {
 	title: string;
 	icon: string;
 	tasks: TickBanTask[];
-	onTagClick: (tag: string) => void;
-	onOpenTask: (task: TickBanTask) => void;
 }
 
 export function Column(props: ColumnProps) {
@@ -37,15 +35,7 @@ export function Column(props: ColumnProps) {
 				<span class="flair">{props.tasks.length}</span>
 			</h3>
 			<div class="tb-column-content">
-				<For each={props.tasks}>
-					{(task) => (
-						<Card
-							task={task}
-							onTagClick={props.onTagClick}
-							onOpenTask={props.onOpenTask}
-						/>
-					)}
-				</For>
+				<For each={props.tasks}>{(task) => <Card task={task} />}</For>
 			</div>
 		</div>
 	);

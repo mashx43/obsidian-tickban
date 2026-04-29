@@ -12,6 +12,7 @@ import {
 import { createStore } from "solid-js/store";
 import type { TickBanTask } from "../core/task-extractor";
 import { Column } from "./Column";
+import { KanbanProvider } from "./KanbanContext";
 import { TagFilter } from "./TagFilter";
 
 const COLUMNS: {
@@ -101,25 +102,27 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 	}
 
 	return (
-		<div class="tb-container">
-			<TagFilter
-				store={tagStore}
-				setStore={setTagStore}
-				activeTags={activeTags()}
-				allTags={allTags()}
-			/>
-			<div class="tb-board">
-				<For each={COLUMNS}>
-					{(column) => (
-						<Column
-							{...column}
-							tasks={filterByStatus(column.status)}
-							onTagClick={onTagClick}
-							onOpenTask={props.onOpenTask}
-						/>
-					)}
-				</For>
+		<KanbanProvider
+			value={{
+				onTagClick,
+				onOpenTask: props.onOpenTask,
+			}}
+		>
+			<div class="tb-container">
+				<TagFilter
+					store={tagStore}
+					setStore={setTagStore}
+					activeTags={activeTags()}
+					allTags={allTags()}
+				/>
+				<div class="tb-board">
+					<For each={COLUMNS}>
+						{(column) => (
+							<Column {...column} tasks={filterByStatus(column.status)} />
+						)}
+					</For>
+				</div>
 			</div>
-		</div>
+		</KanbanProvider>
 	);
 }

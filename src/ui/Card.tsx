@@ -2,14 +2,14 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import { TickBanTask } from "../core/task-extractor";
 import { Icon } from "./Icon";
+import { useKanban } from "./KanbanContext";
 
 interface CardProps {
 	task: TickBanTask;
-	onTagClick: (tag: string) => void;
-	onOpenTask: (task: TickBanTask) => void;
 }
 
 export function Card(props: CardProps) {
+	const { onTagClick, onOpenTask } = useKanban();
 	let ref: HTMLDivElement | undefined;
 	const [isDragging, setIsDragging] = createSignal(false);
 
@@ -33,7 +33,7 @@ export function Card(props: CardProps) {
 				aria-label="Open task in file"
 				onClick={(e) => {
 					e.stopPropagation();
-					props.onOpenTask(props.task);
+					onOpenTask(props.task);
 				}}
 			>
 				<Icon iconId="external-link" />
@@ -49,7 +49,7 @@ export function Card(props: CardProps) {
 								tabIndex={-1}
 								onClick={(e) => {
 									e.stopPropagation();
-									props.onTagClick(tag);
+									onTagClick(tag);
 								}}
 							>
 								{tag}
