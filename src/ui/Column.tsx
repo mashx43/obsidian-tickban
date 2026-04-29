@@ -2,10 +2,12 @@ import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element
 import { createSignal, For, onCleanup, onMount } from "solid-js";
 import { TickBanTask } from "../core/task-extractor";
 import { Card } from "./Card";
+import { Icon } from "./Icon";
 
 interface ColumnProps {
 	status: TickBanTask["status"];
 	title: string;
+	icon: string;
 	tasks: TickBanTask[];
 	onTagClick: (tag: string) => void;
 	onOpenTask: (task: TickBanTask) => void;
@@ -30,7 +32,9 @@ export function Column(props: ColumnProps) {
 	return (
 		<div ref={ref} class="tb-column" bool:data-hover={isHovered()}>
 			<h3 class="tb-column-title">
-				{props.title} ({props.tasks.length})
+				<Icon iconId={props.icon} />
+				{props.title}
+				<span class="flair">{props.tasks.length}</span>
 			</h3>
 			<div class="tb-column-content">
 				<For each={props.tasks}>

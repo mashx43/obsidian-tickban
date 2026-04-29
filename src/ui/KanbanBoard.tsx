@@ -14,10 +14,14 @@ import type { TickBanTask } from "../core/task-extractor";
 import { Column } from "./Column";
 import { TagFilter } from "./TagFilter";
 
-const COLUMNS: { status: TickBanTask["status"]; title: string }[] = [
-	{ status: "todo", title: "ToDo" },
-	{ status: "doing", title: "Doing" },
-	{ status: "done", title: "Done" },
+const COLUMNS: {
+	status: TickBanTask["status"];
+	title: string;
+	icon: string;
+}[] = [
+	{ status: "todo", title: "ToDo", icon: "square" },
+	{ status: "doing", title: "Doing", icon: "square-pen" },
+	{ status: "done", title: "Done", icon: "square-check-big" },
 ];
 
 interface KanbanBoardProps {

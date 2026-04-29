@@ -92,8 +92,14 @@
 	}
 
 	.tb-column-title {
-		margin: 0 0 var(--size-4-3) 0;
-		font-size: var(--font-ui-large);
+		& .flair {
+			margin-inline-start: auto;
+		}
+
+		display: flex;
+		align-items: center;
+		gap: var(--size-4-2);
+		margin: 0 0 var(--size-4-4) 0;
 	}
 
 	.tb-column-content {
