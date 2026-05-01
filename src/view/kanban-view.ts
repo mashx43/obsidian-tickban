@@ -76,7 +76,7 @@ export class KanbanView extends ItemView {
 					onOpenTask: (task) => {
 						const file = this.app.vault.getAbstractFileByPath(task.filePath);
 						if (file instanceof TFile) {
-							this.app.workspace.getLeaf().openFile(file, {
+							void this.app.workspace.getLeaf().openFile(file, {
 								eState: { line: task.line },
 							});
 						}
