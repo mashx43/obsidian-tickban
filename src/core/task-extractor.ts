@@ -1,4 +1,5 @@
 import type { App } from "obsidian";
+import pm from "picomatch";
 
 export interface TickBanTask {
 	id: string; // `${file.path}:${line}`
@@ -14,27 +15,20 @@ export type TaskExtractor = (
 	excludeGlob: string,
 ) => Promise<TickBanTask[]>;
 
-// Simple glob to regex converter
-function globToRegExp(glob: string): RegExp {
-	const escaped = glob.replace(/[.+^${}()|[\]\\]/g, "\\$&");
-	const regexStr = "^" + escaped.replace(/\*/g, ".*").replace(/\?/g, ".") + "$";
-	return new RegExp(regexStr);
-}
-
 export function createTaskExtractor(app: App): TaskExtractor {
 	return async (
 		includeGlob: string,
 		excludeGlob: string,
 	): Promise<TickBanTask[]> => {
 		const files = app.vault.getMarkdownFiles();
-		const includeRegex = includeGlob ? globToRegExp(includeGlob) : null;
-		const excludeRegex = excludeGlob ? globToRegExp(excludeGlob) : null;
+		const isIncluded = includeGlob ? pm(includeGlob) : () => true;
+		const isExcluded = excludeGlob ? pm(excludeGlob) : () => false;
 
 		const tasks: TickBanTask[] = [];
 
 		for (const file of files) {
-			if (includeRegex && !includeRegex.test(file.path)) continue;
-			if (excludeRegex && excludeRegex.test(file.path)) continue;
+			if (!isIncluded(file.path)) continue;
+			if (isExcluded(file.path)) continue;
 
 			const cache = app.metadataCache.getFileCache(file);
 			if (!cache || !cache.listItems) continue;
