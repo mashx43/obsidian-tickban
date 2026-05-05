@@ -32,6 +32,7 @@ interface KanbanBoardProps {
 	loader: () => Promise<TickBanTask[]>;
 	updater: TaskUpdater;
 	onOpenTask: (task: TickBanTask) => void;
+	showFilePath: boolean;
 }
 
 export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
@@ -109,6 +110,7 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 				setFilterPath,
 				onTagClick,
 				onOpenTask: props.onOpenTask,
+				showFilePath: props.showFilePath,
 			}}
 		>
 			<div class="tb-container">

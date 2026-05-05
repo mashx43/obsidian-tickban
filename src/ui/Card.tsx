@@ -10,7 +10,8 @@ interface CardProps {
 }
 
 export function Card(props: CardProps) {
-	const { onTagClick, onOpenTask, filterPath, setFilterPath } = useKanban();
+	const { onTagClick, onOpenTask, filterPath, setFilterPath, showFilePath } =
+		useKanban();
 	let ref: HTMLDivElement | undefined;
 	const [isDragging, setIsDragging] = createSignal(false);
 
@@ -60,7 +61,7 @@ export function Card(props: CardProps) {
 				</div>
 			</Show>
 
-			<Show when={!filterPath()}>
+			<Show when={showFilePath && !filterPath()}>
 				<Button
 					class="tb-card-path-button text-icon-button"
 					tabIndex={-1}

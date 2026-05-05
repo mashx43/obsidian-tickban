@@ -7,6 +7,7 @@ interface KanbanContextValue {
 	setFilterPath: (path: FilterPath) => void;
 	onTagClick: (tag: string) => void;
 	onOpenTask: (task: TickBanTask) => void;
+	showFilePath: boolean;
 }
 
 const KanbanContext = createContext<KanbanContextValue>();

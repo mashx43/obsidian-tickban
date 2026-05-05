@@ -4,11 +4,13 @@ import type TickBanPlugin from "./main";
 export interface TickBanSettings {
 	defaultIncludeGlob: string;
 	defaultExcludeGlob: string;
+	showFilePath: boolean;
 }
 
 export const DEFAULT_SETTINGS: TickBanSettings = {
 	defaultIncludeGlob: "**/*.md",
 	defaultExcludeGlob: "",
+	showFilePath: true,
 };
 
 export class TickBanSettingTab extends PluginSettingTab {
@@ -45,6 +47,18 @@ export class TickBanSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.defaultExcludeGlob)
 					.onChange(async (value) => {
 						this.plugin.settings.defaultExcludeGlob = value;
+						await this.plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName("Show file path")
+			.setDesc("Show file path on task cards.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.showFilePath)
+					.onChange(async (value) => {
+						this.plugin.settings.showFilePath = value;
 						await this.plugin.saveSettings();
 					}),
 			);

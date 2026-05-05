@@ -73,6 +73,7 @@ export class KanbanView extends ItemView {
 				KanbanBoard({
 					loader: () => extractor(this.includeGlob, this.excludeGlob),
 					updater,
+					showFilePath: this.plugin.settings.showFilePath,
 					onOpenTask: (task) => {
 						const file = this.app.vault.getAbstractFileByPath(task.filePath);
 						if (file instanceof TFile) {
