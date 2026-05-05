@@ -161,19 +161,33 @@
 		margin-top: var(--size-4-1);
 	}
 
-	.tag.clickable-icon {
-		cursor: pointer;
-	}
-
-	.tb-card-meta {
-		font-size: var(--font-ui-smaller);
-		color: var(--text-muted);
+	.tb-card-path-button {
 		margin-top: var(--size-4-1);
 	}
 
-	/* Tag Filter */
-	.tb-tag-filter {
-		anchor-name: --tb-tag-dropdown-anchor;
+	/* Path Filter */
+	.tb-path-filter {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		align-items: center;
+		margin-bottom: var(--size-4-1);
+
+		& > :first-child {
+			justify-self: start;
+		}
+	}
+
+	.tb-path-text {
+		font-size: var(--font-ui-small);
+		color: var(--text-muted);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* Filter */
+	.tb-filter-bar {
+		anchor-name: --tb-filter-dropdown-anchor;
 
 		display: flex;
 		align-items: center;
@@ -184,7 +198,7 @@
 		min-height: var(--size-4-9);
 	}
 
-	.tb-tag-list {
+	.tb-filter-list {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--size-4-1);
@@ -193,7 +207,7 @@
 		align-items: center;
 	}
 
-	.tb-tag-input {
+	.tb-filter-input {
 		flex: 1;
 		min-width: 100px;
 		border: none !important;
@@ -204,7 +218,7 @@
 		margin: 0 !important;
 	}
 
-	.tb-tag-dropdown {
+	.tb-filter-dropdown {
 		background-color: var(--background-primary);
 		border: var(--border-width) solid var(--background-modifier-border);
 		border-radius: var(--radius-s);
@@ -213,14 +227,14 @@
 		overflow-y: auto;
 
 		/* Anchor Positioning */
-		position-anchor: --tb-tag-dropdown-anchor;
+		position-anchor: --tb-filter-dropdown-anchor;
 		position-area: bottom span-right;
 		width: anchor-size(width);
 		padding: 0;
 		margin: var(--size-4-2) 0 0 0;
 	}
 
-	.tb-tag-option {
+	.tb-filter-option {
 		&[aria-selected] {
 			cursor: pointer;
 		}

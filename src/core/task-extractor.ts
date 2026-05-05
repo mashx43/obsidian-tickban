@@ -73,7 +73,7 @@ export function createTaskExtractor(app: App): TaskExtractor {
 					/(?:^|\s)#([\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF/-]+)/g,
 				);
 				for (const tag of tagMatches ?? []) {
-					tags.push(tag);
+					tags.push(tag.trim());
 					text = text.replace(tag, "").trim();
 				}
 

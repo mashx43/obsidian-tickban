@@ -1,62 +1,87 @@
+import { TickBanTask } from "core/task-extractor";
 import { usePopover } from "hooks/popover";
-import { batch, createMemo, createSignal, For, Show } from "solid-js";
+import { For, Show } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { createList } from "solid-list";
 import { Icon } from "./Icon";
 import { TagToken } from "./TagToken";
+import { useFilter } from "./useFilter";
 
-interface TagFilterProps {
-	store: Record<string, boolean>;
-	setStore: SetStoreFunction<Record<string, boolean>>;
-	allTags: string[];
+export interface FilterItem {
+	type: "tag" | "path";
+	value: string;
+}
+
+export interface FilterProps {
+	filteredTasks: TickBanTask[];
+	tagStore: Record<string, boolean>;
+	setTagStore: SetStoreFunction<Record<string, boolean>>;
 	activeTags: string[];
 }
 
-export function TagFilter(props: TagFilterProps) {
+export function TaskFilter(props: FilterProps) {
+	const {
+		filterPath,
+		setFilterPath,
+		inputValue,
+		setInputValue,
+		suggestions,
+		clearAllTags,
+	} = useFilter(props);
 	let containerRef: HTMLLabelElement | undefined;
-	const [inputValue, setInputValue] = createSignal("");
 	const popover = usePopover();
-	const inputId = "tb-tag-input";
-	const listboxId = "tb-tag-listbox";
-
-	const filteredSuggestions = createMemo(() => {
-		const query = inputValue().toLowerCase();
-		return props.allTags.filter(
-			(tag) =>
-				!props.store[tag] && (!query || tag.toLowerCase().includes(query)),
-		);
-	});
+	const inputId = "tb-filter-input";
+	const listboxId = "tb-filter-listbox";
 
 	const { active, setActive, onKeyDown } = createList({
-		items: filteredSuggestions,
+		items: () => suggestions().map((_, index) => index),
 		handleTab: false,
 	});
 
-	function toggleTag(tag: string) {
-		props.setStore(tag, (prev) => !prev);
-	}
-
-	function addTag(tag: string) {
-		toggleTag(tag);
+	function addFilter(item: FilterItem) {
+		if (item.type === "tag") {
+			props.setTagStore(item.value, true);
+		} else {
+			setFilterPath(item.value);
+		}
 		setInputValue("");
 		setActive(null);
 		popover.hide();
+	}
+
+	function removeTag(tag: string) {
+		props.setTagStore(tag, false);
+	}
+
+	function scrollIntoView(): void {
+		const index = active();
+		if (index === null || !popover.isOpen()) return;
+
+		const id = createOptionId(index);
+		if (!id) return;
+
+		const element = document.getElementById(id);
+		if (element) {
+			element.scrollIntoView({ block: "nearest" });
+		}
 	}
 
 	function handleKeyDown(e: KeyboardEvent) {
 		const { key } = e;
 
 		if (key === "Enter") {
-			const selected = active();
+			const index = active();
+			if (index === null) return;
+			const selected = suggestions()[index];
 			if (selected) {
-				addTag(selected);
+				addFilter(selected);
 			}
 		} else if (key === "Backspace") {
 			if (inputValue()) return;
 
 			const lastTag = props.activeTags.last();
 			if (lastTag) {
-				toggleTag(lastTag);
+				removeTag(lastTag);
 			}
 		} else if (key === "Escape") {
 			setInputValue("");
@@ -64,11 +89,13 @@ export function TagFilter(props: TagFilterProps) {
 		} else if (key === "ArrowDown") {
 			if (popover.isOpen()) {
 				onKeyDown(e);
+				scrollIntoView();
 			} else {
 				popover.show();
 			}
 		} else {
 			onKeyDown(e);
+			scrollIntoView();
 		}
 	}
 
@@ -78,17 +105,9 @@ export function TagFilter(props: TagFilterProps) {
 		popover.hide();
 	}
 
-	function clearAll() {
-		batch(() => {
-			setInputValue("");
-			for (const tag of props.activeTags) {
-				props.setStore(tag, false);
-			}
-		});
-	}
-
-	function createTagOptionId(tag: string | null): string | undefined {
-		return tag ? `tag-option-${tag}` : undefined;
+	function createOptionId(index: number | null): string | undefined {
+		if (index === null) return;
+		return `filter-option-${index}`;
 	}
 
 	return (
@@ -96,25 +115,27 @@ export function TagFilter(props: TagFilterProps) {
 			<label
 				ref={containerRef}
 				for={inputId}
-				class="tb-tag-filter tb-text-input"
+				class="tb-filter-bar tb-text-input"
 				onFocusOut={handleFocusOut}
 				onKeyDown={handleKeyDown}
 				onPointerDown={(e) => {
 					if (popover.isOpen()) e.preventDefault();
 				}}
 			>
-				<div class="tb-tag-list" role="list" aria-label="Selected tags">
+				<div class="tb-filter-list" role="list" aria-label="Active filters">
 					<For each={props.activeTags}>
-						{(tag) => <TagToken tag={tag} onRemove={toggleTag} />}
+						{(tag) => <TagToken tag={tag} onRemove={removeTag} />}
 					</For>
 					<input
 						id={inputId}
-						class="tb-tag-input"
+						class="tb-filter-input"
 						type="search"
 						spellcheck={false}
 						autocomplete="off"
 						placeholder={
-							props.activeTags.length === 0 ? "Filter by tags..." : ""
+							props.activeTags.length === 0 && !filterPath()
+								? "Filter by tags or paths..."
+								: ""
 						}
 						value={inputValue()}
 						onFocus={popover.show}
@@ -127,7 +148,7 @@ export function TagFilter(props: TagFilterProps) {
 						aria-expanded={popover.isOpen()}
 						aria-haspopup="listbox"
 						aria-controls={listboxId}
-						aria-activedescendant={createTagOptionId(active())}
+						aria-activedescendant={createOptionId(active())}
 					/>
 				</div>
 				<Show when={props.activeTags.length || inputValue()}>
@@ -136,7 +157,7 @@ export function TagFilter(props: TagFilterProps) {
 						type="button"
 						onClick={(e) => {
 							e.preventDefault();
-							clearAll();
+							clearAllTags();
 						}}
 						aria-label="Clear all filters"
 					>
@@ -149,25 +170,25 @@ export function TagFilter(props: TagFilterProps) {
 				id={listboxId}
 				ref={popover.setRef}
 				role="listbox"
-				class="tb-tag-dropdown"
+				class="tb-filter-dropdown"
 				popover="manual"
 				onFocusOut={handleFocusOut}
 				onPointerDown={(e) => e.preventDefault()}
 			>
 				<For
-					each={filteredSuggestions()}
-					fallback={<li class="tb-tag-option">No suggestions</li>}
+					each={suggestions()}
+					fallback={<li class="tb-filter-option">No suggestions</li>}
 				>
-					{(tag) => (
+					{(item, index) => (
 						<li
-							id={createTagOptionId(tag)}
+							id={createOptionId(index())}
 							role="option"
-							class="tb-tag-option"
-							aria-selected={active() === tag}
-							onMouseMove={[setActive, tag]}
-							onClick={[addTag, tag]}
+							class="tb-filter-option"
+							aria-selected={active() === index()}
+							onMouseMove={[setActive, index()]}
+							onClick={[addFilter, item]}
 						>
-							{tag}
+							<span class="tb-filter-option-text">{item.value}</span>
 						</li>
 					)}
 				</For>

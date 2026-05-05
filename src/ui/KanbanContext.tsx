@@ -1,7 +1,10 @@
 import { createContext, useContext } from "solid-js";
 import type { TickBanTask } from "../core/task-extractor";
+import { FilterPath } from "./KanbanBoard";
 
 interface KanbanContextValue {
+	filterPath: () => FilterPath;
+	setFilterPath: (path: FilterPath) => void;
 	onTagClick: (tag: string) => void;
 	onOpenTask: (task: TickBanTask) => void;
 }

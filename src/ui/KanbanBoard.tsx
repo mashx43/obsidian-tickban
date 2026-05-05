@@ -1,19 +1,20 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { TaskUpdater } from "core/task-updater";
 import {
-	createEffect,
 	createMemo,
 	createSignal,
 	For,
 	type JSX,
 	onCleanup,
 	onMount,
+	Show,
 } from "solid-js";
-import { createStore } from "solid-js/store";
 import type { TickBanTask } from "../core/task-extractor";
 import { Column } from "./Column";
+import { createTags } from "./createTags";
 import { KanbanProvider } from "./KanbanContext";
-import { TagFilter } from "./TagFilter";
+import { PathNavigation } from "./PathNavigation";
+import { TaskFilter } from "./TaskFilter";
 
 const COLUMNS: {
 	status: TickBanTask["status"];
@@ -25,6 +26,8 @@ const COLUMNS: {
 	{ status: "done", title: "Done", icon: "square-check-big" },
 ];
 
+export type FilterPath = string | undefined;
+
 interface KanbanBoardProps {
 	loader: () => Promise<TickBanTask[]>;
 	updater: TaskUpdater;
@@ -33,26 +36,17 @@ interface KanbanBoardProps {
 
 export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 	const [tasks, setTasks] = createSignal<TickBanTask[]>([]);
-	const [tagStore, setTagStore] = createStore<Record<string, boolean>>({});
-
-	const allTags = createMemo(() => Object.keys(tagStore).sort());
-	const activeTags = createMemo(() => allTags().filter((tag) => tagStore[tag]));
+	const {
+		store: tagStore,
+		setStore: setTagStore,
+		active: activeTags,
+	} = createTags(tasks);
+	const [filterPath, setFilterPath] = createSignal<FilterPath>();
 
 	async function loadTasks() {
 		const extracted = await props.loader();
 		setTasks(extracted);
 	}
-
-	// When a task is updated, add the new tag to the Store.
-	createEffect(() => {
-		for (const task of tasks()) {
-			for (const tag of task.tags) {
-				if (tagStore[tag] === undefined) {
-					setTagStore(tag, false);
-				}
-			}
-		}
-	});
 
 	onMount(() => {
 		void loadTasks();
@@ -86,11 +80,18 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 
 	const filteredTasks = createMemo(() => {
 		const tags = activeTags();
+		const path = filterPath();
 
-		if (tags.length === 0) return tasks();
-		return tasks().filter((task) =>
-			tags.every((tag) => task.tags.includes(tag)),
-		);
+		if (tags.length === 0 && path === undefined) return tasks();
+
+		return tasks().filter((task) => {
+			const matchesPath = !path || task.filePath === path;
+			if (!matchesPath) return false;
+
+			const matchesTags =
+				tags.length === 0 || tags.every((tag) => task.tags.includes(tag));
+			return matchesTags;
+		});
 	});
 
 	function filterByStatus(status: TickBanTask["status"]): TickBanTask[] {
@@ -104,16 +105,21 @@ export function KanbanBoard(props: KanbanBoardProps): JSX.Element {
 	return (
 		<KanbanProvider
 			value={{
+				filterPath,
+				setFilterPath,
 				onTagClick,
 				onOpenTask: props.onOpenTask,
 			}}
 		>
 			<div class="tb-container">
-				<TagFilter
-					store={tagStore}
-					setStore={setTagStore}
+				<Show when={filterPath()}>
+					<PathNavigation />
+				</Show>
+				<TaskFilter
+					filteredTasks={filteredTasks()}
+					tagStore={tagStore}
+					setTagStore={setTagStore}
 					activeTags={activeTags()}
-					allTags={allTags()}
 				/>
 				<div class="tb-board">
 					<For each={COLUMNS}>
