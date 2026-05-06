@@ -2,7 +2,7 @@ import { Accessor, batch, createMemo, createSignal } from "solid-js";
 import { KanbanContextValue } from "./KanbanContext";
 import { FilterItem } from "./TaskFilter";
 
-export function useFilter(context: KanbanContextValue) {
+export function createFilter(context: KanbanContextValue) {
 	const [inputValue, setInputValue] = createSignal("");
 	const suggestions = createSuggestions(context, inputValue);
 

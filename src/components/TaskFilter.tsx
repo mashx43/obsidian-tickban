@@ -1,10 +1,10 @@
-import { usePopover } from "hooks/popover";
+import { createFilter } from "./create-filter";
+import { createPopover } from "primitives/create-popover";
 import { For, Show } from "solid-js";
 import { createList } from "solid-list";
 import { Icon } from "./Icon";
 import { useKanban } from "./KanbanContext";
 import { TagToken } from "./TagToken";
-import { useFilter } from "./useFilter";
 
 export interface FilterItem {
 	type: "tag" | "path";
@@ -15,9 +15,9 @@ export function TaskFilter() {
 	const context = useKanban();
 	const { activeTags, filterPath, setFilterPath, setTagStore } = context;
 	const { inputValue, setInputValue, suggestions, clearAllTags } =
-		useFilter(context);
+		createFilter(context);
 	let containerRef: HTMLLabelElement | undefined;
-	const popover = usePopover();
+	const popover = createPopover();
 	const inputId = "tb-filter-input";
 	const listboxId = "tb-filter-listbox";
 

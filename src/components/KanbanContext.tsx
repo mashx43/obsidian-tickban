@@ -14,7 +14,7 @@ import {
 } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
 import type { TaskExtractor, TickbanTask } from "../core/task-extractor";
-import { createTags } from "./createTags";
+import { createTags } from "../primitives/create-tags";
 
 export type FilterPath = string | undefined;
 

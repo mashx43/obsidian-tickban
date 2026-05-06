@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
 
-export function usePopover() {
+export function createPopover() {
 	const [ref, setRef] = createSignal<HTMLElement>();
 
 	function isOpen(): boolean {

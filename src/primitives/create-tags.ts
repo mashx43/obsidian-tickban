@@ -1,8 +1,8 @@
 import { TickbanTask } from "core/task-extractor";
-import { createEffect, createMemo } from "solid-js";
+import { Accessor, createEffect, createMemo } from "solid-js";
 import { createStore } from "solid-js/store";
 
-export function createTags(tasks: () => TickbanTask[]) {
+export function createTags(tasks: Accessor<TickbanTask[]>) {
 	const [store, setStore] = createStore<Record<string, boolean>>({});
 
 	createEffect(() => {
