@@ -1,9 +1,8 @@
-import { TickBanTask } from "core/task-extractor";
 import { usePopover } from "hooks/popover";
 import { For, Show } from "solid-js";
-import type { SetStoreFunction } from "solid-js/store";
 import { createList } from "solid-list";
 import { Icon } from "./Icon";
+import { useKanban } from "./KanbanContext";
 import { TagToken } from "./TagToken";
 import { useFilter } from "./useFilter";
 
@@ -12,22 +11,11 @@ export interface FilterItem {
 	value: string;
 }
 
-export interface FilterProps {
-	filteredTasks: TickBanTask[];
-	tagStore: Record<string, boolean>;
-	setTagStore: SetStoreFunction<Record<string, boolean>>;
-	activeTags: string[];
-}
-
-export function TaskFilter(props: FilterProps) {
-	const {
-		filterPath,
-		setFilterPath,
-		inputValue,
-		setInputValue,
-		suggestions,
-		clearAllTags,
-	} = useFilter(props);
+export function TaskFilter() {
+	const context = useKanban();
+	const { activeTags, filterPath, setFilterPath, setTagStore } = context;
+	const { inputValue, setInputValue, suggestions, clearAllTags } =
+		useFilter(context);
 	let containerRef: HTMLLabelElement | undefined;
 	const popover = usePopover();
 	const inputId = "tb-filter-input";
@@ -40,7 +28,7 @@ export function TaskFilter(props: FilterProps) {
 
 	function addFilter(item: FilterItem) {
 		if (item.type === "tag") {
-			props.setTagStore(item.value, true);
+			setTagStore(item.value, true);
 		} else {
 			setFilterPath(item.value);
 		}
@@ -50,7 +38,7 @@ export function TaskFilter(props: FilterProps) {
 	}
 
 	function removeTag(tag: string) {
-		props.setTagStore(tag, false);
+		setTagStore(tag, false);
 	}
 
 	function scrollIntoView(): void {
@@ -79,7 +67,8 @@ export function TaskFilter(props: FilterProps) {
 		} else if (key === "Backspace") {
 			if (inputValue()) return;
 
-			const lastTag = props.activeTags.last();
+			const tags = activeTags();
+			const lastTag = tags[tags.length - 1];
 			if (lastTag) {
 				removeTag(lastTag);
 			}
@@ -123,7 +112,7 @@ export function TaskFilter(props: FilterProps) {
 				}}
 			>
 				<div class="tb-filter-list" role="list" aria-label="Active filters">
-					<For each={props.activeTags}>
+					<For each={activeTags()}>
 						{(tag) => <TagToken tag={tag} onRemove={removeTag} />}
 					</For>
 					<input
@@ -133,7 +122,7 @@ export function TaskFilter(props: FilterProps) {
 						spellcheck={false}
 						autocomplete="off"
 						placeholder={
-							props.activeTags.length === 0 && !filterPath()
+							activeTags().length === 0 && !filterPath()
 								? "Filter by tags or paths..."
 								: ""
 						}
@@ -151,7 +140,7 @@ export function TaskFilter(props: FilterProps) {
 						aria-activedescendant={createOptionId(active())}
 					/>
 				</div>
-				<Show when={props.activeTags.length || inputValue()}>
+				<Show when={activeTags().length || inputValue()}>
 					<button
 						class="clickable-icon"
 						type="button"

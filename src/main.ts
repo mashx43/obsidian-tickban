@@ -4,7 +4,7 @@ import {
 	TickBanSettings,
 	TickBanSettingTab,
 } from "./settings";
-import { KANBAN_VIEW_TYPE, KanbanView } from "./view/kanban-view";
+import { TICKBAN_VIEW_TYPE, TickBanView } from "./view/KanbanView";
 
 export default class TickBanPlugin extends Plugin {
 	settings: TickBanSettings = DEFAULT_SETTINGS;
@@ -13,18 +13,14 @@ export default class TickBanPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This creates an icon in the left ribbon.
-		this.addRibbonIcon(
-			"columns-3",
-			"Open tickban kanban",
-			async (evt: MouseEvent) => {
-				await this.activateView();
-			},
-		);
+		this.addRibbonIcon("columns-3", "Open tickban", async () => {
+			await this.activateView();
+		});
 
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
-			id: "open-tickban-kanban",
-			name: "Open kanban board",
+			id: "open-kanban",
+			name: "Open kanban",
 			callback: async () => {
 				await this.activateView();
 			},
@@ -33,7 +29,7 @@ export default class TickBanPlugin extends Plugin {
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new TickBanSettingTab(this.app, this));
 
-		this.registerView(KANBAN_VIEW_TYPE, (leaf) => new KanbanView(leaf, this));
+		this.registerView(TICKBAN_VIEW_TYPE, (leaf) => new TickBanView(leaf, this));
 	}
 
 	onunload() {}
@@ -42,14 +38,14 @@ export default class TickBanPlugin extends Plugin {
 		const { workspace } = this.app;
 
 		let leaf: WorkspaceLeaf | null = null;
-		const leaves = workspace.getLeavesOfType(KANBAN_VIEW_TYPE);
+		const leaves = workspace.getLeavesOfType(TICKBAN_VIEW_TYPE);
 
 		if (leaves.length > 0) {
 			leaf = leaves[0] || null;
 		} else {
 			leaf = workspace.getLeaf(true);
 			if (leaf) {
-				await leaf.setViewState({ type: KANBAN_VIEW_TYPE, active: true });
+				await leaf.setViewState({ type: TICKBAN_VIEW_TYPE, active: true });
 			}
 		}
 

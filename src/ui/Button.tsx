@@ -1,13 +1,10 @@
 import type { ComponentProps, JSX } from "solid-js";
 
-interface Props extends ComponentProps<"div"> {}
-
-export default function Button(props: Props): JSX.Element {
+export default function Button(props: ComponentProps<"div">): JSX.Element {
 	function onKeyDown(e: KeyboardEvent) {
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
-			// @ts-expect-error
-			e.target?.click?.();
+			(e.target as HTMLButtonElement)?.click?.();
 		}
 	}
 

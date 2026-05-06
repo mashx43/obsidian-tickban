@@ -2,14 +2,14 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import type TickBanPlugin from "./main";
 
 export interface TickBanSettings {
-	defaultIncludeGlob: string;
-	defaultExcludeGlob: string;
+	includeGlob: string;
+	excludeGlob: string;
 	showFilePath: boolean;
 }
 
 export const DEFAULT_SETTINGS: TickBanSettings = {
-	defaultIncludeGlob: "**/*.md",
-	defaultExcludeGlob: "",
+	includeGlob: "**/*.md",
+	excludeGlob: "",
 	showFilePath: true,
 };
 
@@ -31,9 +31,9 @@ export class TickBanSettingTab extends PluginSettingTab {
 			.addText((text) =>
 				text
 					.setPlaceholder("**/*.md")
-					.setValue(this.plugin.settings.defaultIncludeGlob)
+					.setValue(this.plugin.settings.includeGlob)
 					.onChange(async (value) => {
-						this.plugin.settings.defaultIncludeGlob = value;
+						this.plugin.settings.includeGlob = value;
 						await this.plugin.saveSettings();
 					}),
 			);
@@ -44,9 +44,9 @@ export class TickBanSettingTab extends PluginSettingTab {
 			.addText((text) =>
 				text
 					.setPlaceholder("Templates/**")
-					.setValue(this.plugin.settings.defaultExcludeGlob)
+					.setValue(this.plugin.settings.excludeGlob)
 					.onChange(async (value) => {
-						this.plugin.settings.defaultExcludeGlob = value;
+						this.plugin.settings.excludeGlob = value;
 						await this.plugin.saveSettings();
 					}),
 			);

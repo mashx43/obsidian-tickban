@@ -1,25 +1,23 @@
 import { Accessor, batch, createMemo, createSignal } from "solid-js";
-import { FilterPath } from "./KanbanBoard";
-import { useKanban } from "./KanbanContext";
-import { FilterItem, FilterProps } from "./TaskFilter";
+import { KanbanContextValue } from "./KanbanContext";
+import { FilterItem } from "./TaskFilter";
 
-export function useFilter(props: FilterProps) {
-	const { filterPath, setFilterPath } = useKanban();
+export function useFilter(context: KanbanContextValue) {
 	const [inputValue, setInputValue] = createSignal("");
-	const suggestions = createSuggestions(props, filterPath, inputValue);
+	const suggestions = createSuggestions(context, inputValue);
 
 	function clearAllTags() {
+		const { activeTags, setTagStore } = context;
+
 		batch(() => {
 			setInputValue("");
-			for (const tag of props.activeTags) {
-				props.setTagStore(tag, false);
+			for (const tag of activeTags()) {
+				setTagStore(tag, false);
 			}
 		});
 	}
 
 	return {
-		filterPath,
-		setFilterPath,
 		inputValue,
 		setInputValue,
 		suggestions,
@@ -28,13 +26,14 @@ export function useFilter(props: FilterProps) {
 }
 
 function createSuggestions(
-	props: FilterProps,
-	filterPath: Accessor<FilterPath>,
+	context: KanbanContextValue,
 	inputValue: Accessor<string>,
 ): Accessor<FilterItem[]> {
+	const { filteredTasks, tagStore, filterPath } = context;
+
 	const availableTags = createMemo(() => {
 		const tags = new Set<string>();
-		for (const task of props.filteredTasks) {
+		for (const task of filteredTasks()) {
 			for (const tag of task.tags) {
 				tags.add(tag);
 			}
@@ -44,7 +43,7 @@ function createSuggestions(
 
 	const availablePaths = createMemo(() => {
 		const paths = new Set<string>();
-		for (const task of props.filteredTasks) {
+		for (const task of filteredTasks()) {
 			paths.add(task.filePath);
 		}
 		return Array.from(paths).sort();
@@ -56,7 +55,7 @@ function createSuggestions(
 
 		// Tags
 		for (const tag of availableTags()) {
-			if (!props.tagStore[tag] && searchText(tag, query)) {
+			if (!tagStore[tag] && searchText(tag, query)) {
 				items.push({ type: "tag", value: tag });
 			}
 		}

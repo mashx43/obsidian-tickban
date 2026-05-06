@@ -10,7 +10,7 @@ interface CardProps {
 }
 
 export function Card(props: CardProps) {
-	const { onTagClick, onOpenTask, filterPath, setFilterPath, showFilePath } =
+	const { onTagClick, navigator, filterPath, setFilterPath, settings } =
 		useKanban();
 	let ref: HTMLDivElement | undefined;
 	const [isDragging, setIsDragging] = createSignal(false);
@@ -35,7 +35,7 @@ export function Card(props: CardProps) {
 				aria-label="Open task in file"
 				onClick={(e) => {
 					e.stopPropagation();
-					onOpenTask(props.task);
+					navigator(props.task);
 				}}
 			>
 				<Icon iconId="external-link" />
@@ -61,7 +61,7 @@ export function Card(props: CardProps) {
 				</div>
 			</Show>
 
-			<Show when={showFilePath && !filterPath()}>
+			<Show when={settings.showFilePath && !filterPath()}>
 				<Button
 					class="tb-card-path-button text-icon-button"
 					tabIndex={-1}
