@@ -1,14 +1,14 @@
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { createSignal, For, onCleanup, onMount } from "solid-js";
-import { TickBanTask } from "../core/task-extractor";
+import { TickbanTask } from "../core/task-extractor";
 import { Card } from "./Card";
 import { Icon } from "./Icon";
 
 interface ColumnProps {
-	status: TickBanTask["status"];
+	status: TickbanTask["status"];
 	title: string;
 	icon: string;
-	tasks: TickBanTask[];
+	tasks: TickbanTask[];
 }
 
 export function Column(props: ColumnProps) {

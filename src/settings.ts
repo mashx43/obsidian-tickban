@@ -1,22 +1,22 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import type TickBanPlugin from "./main";
+import type TickbanPlugin from "./main";
 
-export interface TickBanSettings {
+export interface TickbanSettings {
 	includeGlob: string;
 	excludeGlob: string;
 	showFilePath: boolean;
 }
 
-export const DEFAULT_SETTINGS: TickBanSettings = {
+export const DEFAULT_SETTINGS: TickbanSettings = {
 	includeGlob: "**/*.md",
 	excludeGlob: "",
 	showFilePath: true,
 };
 
-export class TickBanSettingTab extends PluginSettingTab {
-	plugin: TickBanPlugin;
+export class TickbanSettingTab extends PluginSettingTab {
+	plugin: TickbanPlugin;
 
-	constructor(app: App, plugin: TickBanPlugin) {
+	constructor(app: App, plugin: TickbanPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}

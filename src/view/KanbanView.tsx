@@ -9,21 +9,21 @@ import {
 	type TaskNavigator,
 } from "../core/task-navigator";
 import { createTaskUpdater, type TaskUpdater } from "../core/task-updater";
-import type TickBanPlugin from "../main";
+import type TickbanPlugin from "../main";
 import { KanbanBoard } from "../ui/KanbanBoard";
 import { KanbanProvider } from "../ui/KanbanContext";
 
 export const TICKBAN_VIEW_TYPE = "tickban-view";
 
-export class TickBanView extends ItemView {
-	plugin: TickBanPlugin;
+export class TickbanView extends ItemView {
+	plugin: TickbanPlugin;
 	disposeSolid?: () => void;
 	file: TFile | null = null;
 	private extractor: TaskExtractor;
 	private updater: TaskUpdater;
 	private navigator: TaskNavigator;
 
-	constructor(leaf: WorkspaceLeaf, plugin: TickBanPlugin) {
+	constructor(leaf: WorkspaceLeaf, plugin: TickbanPlugin) {
 		super(leaf);
 		this.plugin = plugin;
 		this.extractor = createTaskExtractor(this.app);

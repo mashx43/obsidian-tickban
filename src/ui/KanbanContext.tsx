@@ -1,7 +1,7 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { TaskNavigator } from "core/task-navigator";
 import type { TaskUpdater } from "core/task-updater";
-import { TickBanSettings } from "settings";
+import { TickbanSettings } from "settings";
 import {
 	Accessor,
 	createContext,
@@ -13,14 +13,14 @@ import {
 	useContext,
 } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
-import type { TaskExtractor, TickBanTask } from "../core/task-extractor";
+import type { TaskExtractor, TickbanTask } from "../core/task-extractor";
 import { createTags } from "./createTags";
 
 export type FilterPath = string | undefined;
 
 export interface KanbanContextValue {
-	tasks: Accessor<TickBanTask[]>;
-	filteredTasks: Accessor<TickBanTask[]>;
+	tasks: Accessor<TickbanTask[]>;
+	filteredTasks: Accessor<TickbanTask[]>;
 	filterPath: Accessor<FilterPath>;
 	setFilterPath: (path: FilterPath) => void;
 	tagStore: Record<string, boolean>;
@@ -28,7 +28,7 @@ export interface KanbanContextValue {
 	activeTags: Accessor<string[]>;
 	onTagClick: (tag: string) => void;
 	navigator: TaskNavigator;
-	settings: TickBanSettings;
+	settings: TickbanSettings;
 }
 
 const KanbanContext = createContext<KanbanContextValue>();
@@ -45,12 +45,12 @@ interface KanbanProviderProps {
 	extractor: TaskExtractor;
 	updater: TaskUpdater;
 	navigator: TaskNavigator;
-	settings: TickBanSettings;
+	settings: TickbanSettings;
 	children: JSX.Element;
 }
 
 export function KanbanProvider(props: KanbanProviderProps) {
-	const [tasks, setTasks] = createSignal<TickBanTask[]>([]);
+	const [tasks, setTasks] = createSignal<TickbanTask[]>([]);
 	const {
 		store: tagStore,
 		setStore: setTagStore,
@@ -72,8 +72,8 @@ export function KanbanProvider(props: KanbanProviderProps) {
 				const destination = location.current.dropTargets[0];
 				if (!destination) return;
 
-				const task = source.data.task as TickBanTask;
-				const newStatus = destination.data.status as TickBanTask["status"];
+				const task = source.data.task as TickbanTask;
+				const newStatus = destination.data.status as TickbanTask["status"];
 				if (task.status === newStatus) return;
 
 				// Optimistic UI update

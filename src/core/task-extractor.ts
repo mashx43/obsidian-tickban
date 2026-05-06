@@ -1,7 +1,7 @@
 import type { App } from "obsidian";
 import pm from "picomatch";
 
-export interface TickBanTask {
+export interface TickbanTask {
 	id: string; // `${file.path}:${line}`
 	filePath: string;
 	line: number;
@@ -13,18 +13,18 @@ export interface TickBanTask {
 export type TaskExtractor = (
 	includeGlob: string,
 	excludeGlob: string,
-) => Promise<TickBanTask[]>;
+) => Promise<TickbanTask[]>;
 
 export function createTaskExtractor(app: App): TaskExtractor {
 	return async (
 		includeGlob: string,
 		excludeGlob: string,
-	): Promise<TickBanTask[]> => {
+	): Promise<TickbanTask[]> => {
 		const files = app.vault.getMarkdownFiles();
 		const isIncluded = includeGlob ? pm(includeGlob) : () => true;
 		const isExcluded = excludeGlob ? pm(excludeGlob) : () => false;
 
-		const tasks: TickBanTask[] = [];
+		const tasks: TickbanTask[] = [];
 
 		for (const file of files) {
 			if (!isIncluded(file.path)) continue;
@@ -46,7 +46,7 @@ export function createTaskExtractor(app: App): TaskExtractor {
 				const lineText = lines[lineNum];
 				if (!lineText) continue;
 
-				let status: TickBanTask["status"];
+				let status: TickbanTask["status"];
 				if (item.task === " " || item.task === "") {
 					status = "todo";
 				} else if (item.task === "/") {

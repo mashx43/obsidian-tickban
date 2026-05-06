@@ -1,13 +1,13 @@
 import { Plugin, WorkspaceLeaf } from "obsidian";
 import {
 	DEFAULT_SETTINGS,
-	TickBanSettings,
-	TickBanSettingTab,
+	TickbanSettings,
+	TickbanSettingTab,
 } from "./settings";
-import { TICKBAN_VIEW_TYPE, TickBanView } from "./view/KanbanView";
+import { TICKBAN_VIEW_TYPE, TickbanView } from "./view/KanbanView";
 
-export default class TickBanPlugin extends Plugin {
-	settings: TickBanSettings = DEFAULT_SETTINGS;
+export default class TickbanPlugin extends Plugin {
+	settings: TickbanSettings = DEFAULT_SETTINGS;
 
 	async onload() {
 		await this.loadSettings();
@@ -27,9 +27,9 @@ export default class TickBanPlugin extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new TickBanSettingTab(this.app, this));
+		this.addSettingTab(new TickbanSettingTab(this.app, this));
 
-		this.registerView(TICKBAN_VIEW_TYPE, (leaf) => new TickBanView(leaf, this));
+		this.registerView(TICKBAN_VIEW_TYPE, (leaf) => new TickbanView(leaf, this));
 	}
 
 	onunload() {}
@@ -60,7 +60,7 @@ export default class TickBanPlugin extends Plugin {
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
-			(await this.loadData()) as Partial<TickBanSettings>,
+			(await this.loadData()) as Partial<TickbanSettings>,
 		);
 	}
 

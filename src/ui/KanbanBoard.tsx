@@ -1,12 +1,12 @@
 import { For, type JSX, Show } from "solid-js";
-import type { TickBanTask } from "../core/task-extractor";
+import type { TickbanTask } from "../core/task-extractor";
 import { Column } from "./Column";
 import { useKanban } from "./KanbanContext";
 import { PathNavigation } from "./PathNavigation";
 import { TaskFilter } from "./TaskFilter";
 
 const COLUMNS: {
-	status: TickBanTask["status"];
+	status: TickbanTask["status"];
 	title: string;
 	icon: string;
 }[] = [
@@ -18,7 +18,7 @@ const COLUMNS: {
 export function KanbanBoard(): JSX.Element {
 	const { filteredTasks, filterPath } = useKanban();
 
-	function filterByStatus(status: TickBanTask["status"]): TickBanTask[] {
+	function filterByStatus(status: TickbanTask["status"]): TickbanTask[] {
 		return filteredTasks().filter((t) => t.status === status);
 	}
 

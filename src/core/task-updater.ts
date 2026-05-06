@@ -1,15 +1,15 @@
 import { App } from "obsidian";
-import { TickBanTask } from "./task-extractor";
+import { TickbanTask } from "./task-extractor";
 
 export type TaskUpdater = (
-	task: TickBanTask,
-	newStatus: TickBanTask["status"],
+	task: TickbanTask,
+	newStatus: TickbanTask["status"],
 ) => Promise<void>;
 
 export function createTaskUpdater(app: App): TaskUpdater {
 	return async (
-		task: TickBanTask,
-		newStatus: TickBanTask["status"],
+		task: TickbanTask,
+		newStatus: TickbanTask["status"],
 	): Promise<void> => {
 		const file = app.vault.getFileByPath(task.filePath);
 		if (!file) return;
