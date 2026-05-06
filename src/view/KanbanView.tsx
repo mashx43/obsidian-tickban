@@ -1,5 +1,7 @@
 import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
 import { render } from "solid-js/web";
+import { KanbanBoard } from "../components/KanbanBoard";
+import { KanbanProvider } from "../components/KanbanContext";
 import {
 	createTaskExtractor,
 	type TaskExtractor,
@@ -10,8 +12,6 @@ import {
 } from "../core/task-navigator";
 import { createTaskUpdater, type TaskUpdater } from "../core/task-updater";
 import type TickbanPlugin from "../main";
-import { KanbanBoard } from "../ui/KanbanBoard";
-import { KanbanProvider } from "../ui/KanbanContext";
 
 export const TICKBAN_VIEW_TYPE = "tickban-view";
 
