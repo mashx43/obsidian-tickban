@@ -66,5 +66,12 @@ export default class TickbanPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+
+		const leaves = this.app.workspace.getLeavesOfType(TICKBAN_VIEW_TYPE);
+		for (const leaf of leaves) {
+			if (leaf.view instanceof TickbanView) {
+				leaf.view.refresh();
+			}
+		}
 	}
 }

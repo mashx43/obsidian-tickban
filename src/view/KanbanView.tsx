@@ -2,6 +2,7 @@ import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
 import { render } from "solid-js/web";
 import { KanbanBoard } from "../components/KanbanBoard";
 import { KanbanProvider } from "../components/KanbanContext";
+import { REFRESH_EVENT } from "../constants";
 import {
 	createTaskExtractor,
 	type TaskExtractor,
@@ -45,6 +46,16 @@ export class TickbanView extends ItemView {
 
 	async onOpen() {
 		this.renderSolid();
+
+		this.registerEvent(
+			this.app.vault.on("modify", () => {
+				this.contentEl.dispatchEvent(new CustomEvent(REFRESH_EVENT));
+			}),
+		);
+	}
+
+	refresh() {
+		this.renderSolid();
 	}
 
 	renderSolid() {
@@ -52,7 +63,13 @@ export class TickbanView extends ItemView {
 
 		const { contentEl, extractor, updater, navigator } = this;
 		const { settings } = this.plugin;
-		const props = { extractor, updater, navigator, settings };
+		const props = {
+			extractor,
+			updater,
+			navigator,
+			settings,
+			contentEl,
+		};
 
 		this.disposeSolid = render(
 			() => (

@@ -13,6 +13,7 @@ import {
 	useContext,
 } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
+import { REFRESH_EVENT } from "../constants";
 import type { TaskExtractor, TickbanTask } from "../core/task-extractor";
 import { createTags } from "../primitives/create-tags";
 
@@ -46,6 +47,7 @@ interface KanbanProviderProps {
 	updater: TaskUpdater;
 	navigator: TaskNavigator;
 	settings: TickbanSettings;
+	contentEl: HTMLElement;
 	children: JSX.Element;
 }
 
@@ -57,15 +59,31 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		active: activeTags,
 	} = createTags(tasks);
 	const [filterPath, setFilterPath] = createSignal<FilterPath>();
+	let isUpdating = false;
 
 	async function loadTasks() {
-		const { includeGlob, excludeGlob } = props.settings;
-		const extracted = await props.extractor(includeGlob, excludeGlob);
+		const { extractor, settings } = props;
+		const { includeGlob, excludeGlob } = settings;
+
+		const extracted = await extractor(includeGlob, excludeGlob);
 		setTasks(extracted);
 	}
 
 	onMount(() => {
+		const { contentEl, updater } = props;
 		void loadTasks();
+
+		function handleRefresh() {
+			if (!isUpdating) {
+				void loadTasks();
+			}
+		}
+
+		function finishUpdating() {
+			isUpdating = false;
+		}
+
+		contentEl.addEventListener(REFRESH_EVENT, handleRefresh);
 
 		const cleanup = monitorForElements({
 			onDrop: ({ source, location }) => {
@@ -82,11 +100,17 @@ export function KanbanProvider(props: KanbanProviderProps) {
 				);
 
 				// Actual vault update
-				void props.updater(task, newStatus);
+				isUpdating = true;
+				void updater(task, newStatus)
+					.then(finishUpdating)
+					.catch(finishUpdating);
 			},
 		});
 
-		onCleanup(() => cleanup());
+		onCleanup(() => {
+			cleanup();
+			contentEl.removeEventListener(REFRESH_EVENT, handleRefresh);
+		});
 	});
 
 	const filteredTasks = createMemo(() => {
