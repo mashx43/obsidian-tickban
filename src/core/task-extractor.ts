@@ -8,6 +8,7 @@ export interface TickbanTask {
 	text: string;
 	status: "todo" | "doing" | "done";
 	tags: string[];
+	mtime: number;
 }
 
 export type TaskExtractor = (
@@ -78,10 +79,16 @@ export function createTaskExtractor(app: App): TaskExtractor {
 					text,
 					status,
 					tags,
+					mtime: file.stat.mtime,
 				});
 			}
 		}
 
-		return tasks;
+		return tasks.sort((a, b) => {
+			if (a.mtime !== b.mtime) {
+				return b.mtime - a.mtime;
+			}
+			return a.line - b.line;
+		});
 	};
 }
