@@ -14,18 +14,22 @@ export interface TickbanTask {
 export type TaskExtractor = (
 	includeGlob: string,
 	excludeGlob: string,
+	hideDoneAfterDays: number,
 ) => Promise<TickbanTask[]>;
 
 export function createTaskExtractor(app: App): TaskExtractor {
 	return async (
 		includeGlob: string,
 		excludeGlob: string,
+		hideDoneAfterDays: number,
 	): Promise<TickbanTask[]> => {
 		const files = app.vault.getMarkdownFiles();
 		const isIncluded = includeGlob ? pm(includeGlob) : () => true;
 		const isExcluded = excludeGlob ? pm(excludeGlob) : () => false;
 
 		const tasks: TickbanTask[] = [];
+		const now = Date.now();
+		const thresholdMs = hideDoneAfterDays * 24 * 60 * 60 * 1000;
 
 		for (const file of files) {
 			if (!isIncluded(file.path)) continue;
@@ -53,6 +57,10 @@ export function createTaskExtractor(app: App): TaskExtractor {
 				} else if (item.task === "/") {
 					status = "doing";
 				} else if (item.task?.toLowerCase() === "x") {
+					if (thresholdMs && now - file.stat.mtime > thresholdMs) {
+						continue;
+					}
+
 					status = "done";
 				} else {
 					continue; // Ignore other statuses like '-', '>', etc.

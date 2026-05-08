@@ -5,12 +5,14 @@ export interface TickbanSettings {
 	includeGlob: string;
 	excludeGlob: string;
 	showFilePath: boolean;
+	hideDoneAfterDays: number;
 }
 
 export const DEFAULT_SETTINGS: TickbanSettings = {
 	includeGlob: "**/*.md",
 	excludeGlob: "",
 	showFilePath: true,
+	hideDoneAfterDays: 7,
 };
 
 export class TickbanSettingTab extends PluginSettingTab {
@@ -60,6 +62,24 @@ export class TickbanSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.showFilePath = value;
 						await this.plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName("Hide done tasks (days)")
+			.setDesc(
+				"Hide done tasks if the file hasn't been modified for this many days. Set to 0 to show all.",
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder("7")
+					.setValue(this.plugin.settings.hideDoneAfterDays.toString())
+					.onChange(async (value) => {
+						const numValue = Number.parseInt(value, 10);
+						if (!Number.isNaN(numValue) && numValue >= 0) {
+							this.plugin.settings.hideDoneAfterDays = numValue;
+							await this.plugin.saveSettings();
+						}
 					}),
 			);
 	}
