@@ -59,6 +59,10 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		active: activeTags,
 	} = createTags(tasks);
 	const [filterPath, setFilterPath] = createSignal<FilterPath>();
+	const [priorityTaskIds, setPriorityTaskIds] = createSignal<string[]>([]);
+	const priorityMap = createMemo(
+		() => new Map(priorityTaskIds().map((id, index) => [id, index])),
+	);
 	let isUpdating = false;
 
 	async function loadTasks() {
@@ -98,6 +102,10 @@ export function KanbanProvider(props: KanbanProviderProps) {
 				setTasks((prev) =>
 					prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t)),
 				);
+				setPriorityTaskIds((prev) => [
+					task.id,
+					...prev.filter((id) => id !== task.id),
+				]);
 
 				// Actual vault update
 				isUpdating = true;
@@ -116,16 +124,34 @@ export function KanbanProvider(props: KanbanProviderProps) {
 	const filteredTasks = createMemo(() => {
 		const tags = activeTags();
 		const path = filterPath();
+		const priorities = priorityMap();
+		const hasTags = !!tags.length;
 
-		if (tags.length === 0 && path === undefined) return tasks();
+		const filtered =
+			!hasTags && !path
+				? tasks()
+				: tasks().filter((task) => {
+						const matchesPath = !path || task.filePath === path;
+						if (!matchesPath) return false;
 
-		return tasks().filter((task) => {
-			const matchesPath = !path || task.filePath === path;
-			if (!matchesPath) return false;
+						const matchesTags =
+							!hasTags || tags.every((tag) => task.tags.includes(tag));
+						return matchesTags;
+					});
 
-			const matchesTags =
-				tags.length === 0 || tags.every((tag) => task.tags.includes(tag));
-			return matchesTags;
+		if (!priorities.size) return filtered;
+
+		return [...filtered].sort((a, b) => {
+			const aIndex = priorities.get(a.id);
+			const bIndex = priorities.get(b.id);
+
+			if (aIndex !== undefined && bIndex !== undefined) {
+				return aIndex - bIndex;
+			}
+			if (aIndex !== undefined) return -1;
+			if (bIndex !== undefined) return 1;
+
+			return 0;
 		});
 	});
 
