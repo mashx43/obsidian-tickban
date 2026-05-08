@@ -28,30 +28,38 @@ export class TickbanSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Default include glob")
-			.setDesc("Default glob pattern to include files for task extraction.")
-			.addText((text) =>
+			.setName("Include glob")
+			.setDesc(
+				"Glob pattern to include files for task extraction. Support multiple patterns (one per line).",
+			)
+			.addTextArea((text) => {
 				text
 					.setPlaceholder("**/*.md")
 					.setValue(this.plugin.settings.includeGlob)
 					.onChange(async (value) => {
 						this.plugin.settings.includeGlob = value;
 						await this.plugin.saveSettings();
-					}),
-			);
+					});
+
+				text.inputEl.setCssStyles({ minWidth: "80px", fieldSizing: "content" });
+			});
 
 		new Setting(containerEl)
-			.setName("Default exclude glob")
-			.setDesc("Default glob pattern to exclude files.")
-			.addText((text) =>
+			.setName("Exclude glob")
+			.setDesc(
+				"Glob pattern to exclude files. Support multiple patterns (one per line).",
+			)
+			.addTextArea((text) => {
 				text
 					.setPlaceholder("Templates/**")
 					.setValue(this.plugin.settings.excludeGlob)
 					.onChange(async (value) => {
 						this.plugin.settings.excludeGlob = value;
 						await this.plugin.saveSettings();
-					}),
-			);
+					});
+
+				text.inputEl.setCssStyles({ minWidth: "80px", fieldSizing: "content" });
+			});
 
 		new Setting(containerEl)
 			.setName("Show file path")

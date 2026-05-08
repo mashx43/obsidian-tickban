@@ -18,14 +18,36 @@ export type TaskExtractor = (
 ) => Promise<TickbanTask[]>;
 
 export function createTaskExtractor(app: App): TaskExtractor {
+	let lastIncludeGlob: string | undefined;
+	let lastExcludeGlob: string | undefined;
+	let isIncluded: (path: string) => boolean;
+	let isExcluded: (path: string) => boolean;
+
+	function compileGlob(glob: string, defaultFn: () => boolean) {
+		const patterns: string[] = [];
+		for (const s of glob.split("\n")) {
+			const trimmed = s.trim();
+			if (trimmed) patterns.push(trimmed);
+		}
+		return patterns.length ? pm(patterns) : defaultFn;
+	}
+
 	return async (
 		includeGlob: string,
 		excludeGlob: string,
 		hideDoneAfterDays: number,
 	): Promise<TickbanTask[]> => {
 		const files = app.vault.getMarkdownFiles();
-		const isIncluded = includeGlob ? pm(includeGlob) : () => true;
-		const isExcluded = excludeGlob ? pm(excludeGlob) : () => false;
+
+		if (includeGlob !== lastIncludeGlob) {
+			isIncluded = compileGlob(includeGlob, () => true);
+			lastIncludeGlob = includeGlob;
+		}
+
+		if (excludeGlob !== lastExcludeGlob) {
+			isExcluded = compileGlob(excludeGlob, () => false);
+			lastExcludeGlob = excludeGlob;
+		}
 
 		const tasks: TickbanTask[] = [];
 		const now = Date.now();
