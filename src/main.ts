@@ -1,7 +1,7 @@
-import { Plugin, WorkspaceLeaf } from "obsidian";
+import { Plugin, type WorkspaceLeaf } from "obsidian";
 import {
 	DEFAULT_SETTINGS,
-	TickbanSettings,
+	type TickbanSettings,
 	TickbanSettingTab,
 } from "./settings";
 import { TICKBAN_VIEW_TYPE, TickbanView } from "./view/KanbanView";

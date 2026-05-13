@@ -1,6 +1,6 @@
-import { Accessor, batch, createMemo, createSignal } from "solid-js";
-import { KanbanContextValue } from "./KanbanContext";
-import { FilterItem } from "./TaskFilter";
+import { type Accessor, batch, createMemo, createSignal } from "solid-js";
+import type { KanbanContextValue } from "./KanbanContext";
+import type { FilterItem } from "./TaskFilter";
 
 export function createFilter(context: KanbanContextValue) {
 	const [inputValue, setInputValue] = createSignal("");

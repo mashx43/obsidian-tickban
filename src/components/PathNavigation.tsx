@@ -1,4 +1,4 @@
-import { JSX } from "solid-js";
+import type { JSX } from "solid-js";
 import Button from "./Button";
 import { Icon } from "./Icon";
 import { useKanban } from "./KanbanContext";

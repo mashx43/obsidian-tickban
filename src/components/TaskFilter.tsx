@@ -1,7 +1,7 @@
-import { createFilter } from "./create-filter";
 import { createPopover } from "primitives/create-popover";
 import { For, Show } from "solid-js";
 import { createList } from "solid-list";
+import { createFilter } from "./create-filter";
 import { Icon } from "./Icon";
 import { useKanban } from "./KanbanContext";
 import { TagToken } from "./TagToken";

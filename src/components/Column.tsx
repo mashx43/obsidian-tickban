@@ -1,6 +1,6 @@
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { createSignal, For, onCleanup, onMount } from "solid-js";
-import { TickbanTask } from "../core/task-extractor";
+import type { TickbanTask } from "../core/task-extractor";
 import { Card } from "./Card";
 import { Icon } from "./Icon";
 

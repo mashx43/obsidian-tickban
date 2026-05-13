@@ -2,18 +2,18 @@ import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/ad
 import type { TaskNavigator } from "core/task-navigator";
 import type { TaskUpdater } from "core/task-updater";
 import { debounce } from "obsidian";
-import { TickbanSettings } from "settings";
+import type { TickbanSettings } from "settings";
 import {
-	Accessor,
+	type Accessor,
 	createContext,
 	createMemo,
 	createSignal,
-	JSX,
+	type JSX,
 	onCleanup,
 	onMount,
 	useContext,
 } from "solid-js";
-import { SetStoreFunction } from "solid-js/store";
+import type { SetStoreFunction } from "solid-js/store";
 import { REFRESH_EVENT } from "../constants";
 import type { TaskExtractor, TickbanTask } from "../core/task-extractor";
 import { createTags } from "../primitives/create-tags";

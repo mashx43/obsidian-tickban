@@ -1,5 +1,5 @@
-import { App } from "obsidian";
-import { TickbanTask } from "./task-extractor";
+import type { App } from "obsidian";
+import type { TickbanTask } from "./task-extractor";
 
 export type TaskUpdater = (
 	task: TickbanTask,

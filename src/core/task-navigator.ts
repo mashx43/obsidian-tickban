@@ -1,5 +1,5 @@
-import { App, TFile } from "obsidian";
-import { TickbanTask } from "./task-extractor";
+import { type App, TFile } from "obsidian";
+import type { TickbanTask } from "./task-extractor";
 
 export type TaskNavigator = (task: TickbanTask) => void;
 

@@ -1,5 +1,5 @@
 import { getIcon, type IconName } from "obsidian";
-import { JSX } from "solid-js";
+import type { JSX } from "solid-js";
 
 interface Props {
 	iconId: IconName;

@@ -1,4 +1,4 @@
-import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
+import { ItemView, type TFile, type WorkspaceLeaf } from "obsidian";
 import { render } from "solid-js/web";
 import { KanbanBoard } from "../components/KanbanBoard";
 import { KanbanProvider } from "../components/KanbanContext";

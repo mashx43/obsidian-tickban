@@ -1,6 +1,6 @@
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { createSignal, For, onCleanup, onMount, Show } from "solid-js";
-import { TickbanTask } from "../core/task-extractor";
+import type { TickbanTask } from "../core/task-extractor";
 import Button from "./Button";
 import { Icon } from "./Icon";
 import { useKanban } from "./KanbanContext";

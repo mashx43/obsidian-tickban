@@ -1,5 +1,5 @@
-import { TickbanTask } from "core/task-extractor";
-import { Accessor, createEffect, createMemo } from "solid-js";
+import type { TickbanTask } from "core/task-extractor";
+import { type Accessor, createEffect, createMemo } from "solid-js";
 import { createStore } from "solid-js/store";
 
 export function createTags(tasks: Accessor<TickbanTask[]>) {
