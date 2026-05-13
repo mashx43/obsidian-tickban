@@ -74,7 +74,7 @@ export function createTaskExtractor(app: App): TaskExtractor {
 				if (!lineText) continue;
 
 				let status: TickbanTask["status"];
-				if (item.task === " " || item.task === "") {
+				if (item.task === " ") {
 					status = "todo";
 				} else if (item.task === "/") {
 					status = "doing";
@@ -89,8 +89,9 @@ export function createTaskExtractor(app: App): TaskExtractor {
 				}
 
 				// Extract text after the checkbox
-				const match = lineText.match(/-\s*\[.*?\]\s*(.*)/);
-				let text = match && match[1] ? match[1].trim() : lineText.trim();
+				const match = lineText.match(/^[\s]*[-*+]\s*\[.*?\]\s*(.*)/);
+				let text = match?.[1]?.trim();
+				if (!text) continue;
 
 				// Extract tags (#tag) and remove them from text for cleaner display
 				const tags: string[] = [];
