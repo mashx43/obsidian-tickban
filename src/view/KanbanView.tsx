@@ -47,11 +47,13 @@ export class TickbanView extends ItemView {
 	async onOpen() {
 		this.renderSolid();
 
-		this.registerEvent(
-			this.app.vault.on("modify", () => {
-				this.contentEl.dispatchEvent(new CustomEvent(REFRESH_EVENT));
-			}),
-		);
+		const refresh = () => {
+			this.contentEl.dispatchEvent(new CustomEvent(REFRESH_EVENT));
+		};
+
+		this.registerEvent(this.app.vault.on("modify", refresh));
+		this.registerEvent(this.app.vault.on("delete", refresh));
+		this.registerEvent(this.app.vault.on("rename", refresh));
 	}
 
 	refresh() {

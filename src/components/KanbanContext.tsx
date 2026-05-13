@@ -1,6 +1,7 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { TaskNavigator } from "core/task-navigator";
 import type { TaskUpdater } from "core/task-updater";
+import { debounce } from "obsidian";
 import { TickbanSettings } from "settings";
 import {
 	Accessor,
@@ -81,11 +82,11 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		const { contentEl, updater } = props;
 		void loadTasks();
 
-		function handleRefresh() {
+		const handleRefresh = debounce(() => {
 			if (!isUpdating) {
 				void loadTasks();
 			}
-		}
+		}, 500);
 
 		function finishUpdating() {
 			isUpdating = false;
