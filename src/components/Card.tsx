@@ -1,5 +1,8 @@
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
+import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
 import { createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import { render } from "solid-js/web";
 import type { TickbanTask } from "../core/task-extractor";
 import Button from "./Button";
 import { Icon } from "./Icon";
@@ -20,6 +23,31 @@ export function Card(props: CardProps) {
 		const cleanup = draggable({
 			element: ref,
 			getInitialData: () => ({ task: props.task }),
+			onGenerateDragPreview: ({ nativeSetDragImage }) => {
+				setCustomNativeDragPreview({
+					nativeSetDragImage,
+					getOffset: pointerOutsideOfPreview({
+						x: "4px",
+						y: "6px",
+					}),
+					render({ container }) {
+						const cleanup = render(
+							() => (
+								<div class="drag-ghost">
+									<div>{props.task.text}</div>
+									<div class="drag-ghost-action tb-drag-preview-tags">
+										<For each={props.task.tags}>
+											{(tag) => <span>{tag}</span>}
+										</For>
+									</div>
+								</div>
+							),
+							container,
+						);
+						return () => cleanup();
+					},
+				});
+			},
 			onDragStart: () => setIsDragging(true),
 			onDrop: () => setIsDragging(false),
 		});

@@ -250,3 +250,9 @@
 		padding: var(--size-4-2) var(--size-4-3);
 	}
 }
+
+.tb-drag-preview-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-2-1);
+}
