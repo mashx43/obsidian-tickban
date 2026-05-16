@@ -23,8 +23,12 @@ export function createTaskUpdater(app: App): TaskUpdater {
 			const lineText = lines[task.line];
 
 			if (lineText) {
-				// Replace the first occurrence of `- [ ]`, `- [/]`, or `- [x]`
-				lines[task.line] = lineText.replace(/-\s*\[.*?\]/, `- [${statusChar}]`);
+				// Replace the first occurrence of `- [ ]`, `* [ ]`, or `+ [ ]` etc.
+				// while preserving the indentation and the marker (+, *, or -).
+				lines[task.line] = lineText.replace(
+					/^(\s*[-*+]\s*\[).*?(\])/,
+					`$1${statusChar}$2`,
+				);
 			}
 
 			return lines.join("\n");
