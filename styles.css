@@ -68,6 +68,7 @@
 		gap: var(--size-4-3);
 		margin-top: var(--size-4-4);
 		overflow-x: auto;
+		scroll-snap-type: x proximity;
 	}
 
 	/* Column */
@@ -75,7 +76,9 @@
 		display: flex;
 		flex-direction: column;
 		width: 280px;
+		max-width: calc(100% - var(--size-4-4));
 		padding: var(--size-4-3);
+		scroll-snap-align: start;
 
 		background-color: var(--background-primary-alt);
 		border-radius: var(--radius-m);
@@ -115,7 +118,7 @@
 		gap: var(--size-4-2);
 		padding: var(--input-border-width-focus);
 		margin: calc(var(--input-border-width-focus) * -1);
-		overflow-y: auto;
+		overflow: hidden auto;
 	}
 
 	/* Card */
