@@ -41,6 +41,7 @@ export class TickbanSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 
+				// @ts-ignore: fieldSizing is a new CSS property
 				text.inputEl.setCssStyles({ minWidth: "80px", fieldSizing: "content" });
 			});
 
@@ -58,6 +59,7 @@ export class TickbanSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 
+				// @ts-ignore: fieldSizing is a new CSS property
 				text.inputEl.setCssStyles({ minWidth: "80px", fieldSizing: "content" });
 			});
 
