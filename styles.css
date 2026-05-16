@@ -1,15 +1,31 @@
 .tb-container {
+	/* --- Variables & Base --- */
 	--icon-size: var(--icon-s);
 	--focus-ring-shadow: 0 0 0 var(--input-border-width-focus)
 		var(--background-modifier-border-focus);
 
-	height: 100%;
-	width: 100%;
 	display: flex;
 	flex-direction: column;
+	width: 100%;
+	height: 100%;
 
-	/* Components */
+	/* --- Base Components --- */
+
+	/* Tag */
 	.tb-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--size-4-1);
+		padding: var(--tag-padding-y) var(--tag-padding-x);
+
+		font-size: var(--tag-size);
+		font-weight: var(--tag-weight);
+		color: var(--tag-color);
+		text-decoration: var(--tag-decoration);
+		background-color: var(--tag-background);
+		border: var(--tag-border-width) solid var(--tag-border-color);
+		border-radius: var(--tag-radius);
+
 		&:hover {
 			color: var(--tag-color-hover);
 			text-decoration: var(--tag-decoration-hover);
@@ -24,21 +40,14 @@
 		& .svg-icon {
 			--icon-size: var(--icon-xs);
 		}
-
-		display: inline-flex;
-		align-items: center;
-		gap: var(--size-4-1);
-		font-size: var(--tag-size);
-		color: var(--tag-color);
-		text-decoration: var(--tag-decoration);
-		background-color: var(--tag-background);
-		border: var(--tag-border-width) solid var(--tag-border-color);
-		padding: var(--tag-padding-y) var(--tag-padding-x);
-		border-radius: var(--tag-radius);
-		font-weight: var(--tag-weight);
 	}
 
+	/* Text Input */
 	.tb-text-input {
+		border-width: var(--input-border-width);
+		border-radius: var(--input-radius);
+		font-weight: var(--input-font-weight);
+
 		&:focus-within {
 			border-color: var(--background-modifier-border-focus);
 			transition:
@@ -49,14 +58,11 @@
 		&:has(:focus-visible) {
 			box-shadow: var(--focus-ring-shadow);
 		}
-
-		/* height: var(--input-height); */
-		border-radius: var(--input-radius);
-		font-weight: var(--input-font-weight);
-		border-width: var(--input-border-width);
 	}
 
-	/* Kanban */
+	/* --- Kanban Layout --- */
+
+	/* Board */
 	.tb-board {
 		display: flex;
 		gap: var(--size-4-3);
@@ -64,9 +70,19 @@
 		overflow-x: auto;
 	}
 
+	/* Column */
 	.tb-column {
+		display: flex;
+		flex-direction: column;
+		width: 280px;
+		padding: var(--size-4-3);
+
+		background-color: var(--background-primary-alt);
+		border-radius: var(--radius-m);
+
 		&[data-hover] {
 			--hover-color: hsla(var(--interactive-accent-hsl), 0.1);
+			background-color: var(--hover-color);
 
 			.tb-column-title {
 				color: var(--text-accent);
@@ -79,40 +95,39 @@
 					var(--background-primary)
 				);
 			}
-
-			background-color: var(--hover-color);
 		}
-
-		width: 280px;
-		display: flex;
-		flex-direction: column;
-		background-color: var(--background-primary-alt);
-		padding: var(--size-4-3);
-		border-radius: var(--radius-m);
 	}
 
 	.tb-column-title {
-		& .flair {
-			margin-inline-start: auto;
-		}
-
 		display: flex;
 		align-items: center;
 		gap: var(--size-4-2);
 		margin: 0 0 var(--size-4-4) 0;
+
+		& .flair {
+			margin-inline-start: auto;
+		}
 	}
 
 	.tb-column-content {
 		display: flex;
 		flex-direction: column;
 		gap: var(--size-4-2);
-		overflow-y: auto;
-
 		padding: var(--input-border-width-focus);
 		margin: calc(var(--input-border-width-focus) * -1);
+		overflow-y: auto;
 	}
 
+	/* Card */
 	.tb-card {
+		position: relative;
+		padding: var(--size-4-2);
+
+		background-color: var(--background-primary);
+		border: var(--border-width) solid var(--background-modifier-border);
+		border-radius: var(--radius-s);
+		cursor: grab;
+
 		&:hover .tb-card-open-button {
 			opacity: 1;
 		}
@@ -124,17 +139,11 @@
 		&[data-dragging] {
 			color: var(--text-on-accent);
 			background-color: var(--interactive-accent);
+
 			* {
 				color: inherit;
 			}
 		}
-
-		position: relative;
-		padding: var(--size-4-2);
-		background-color: var(--background-primary);
-		border: var(--border-width) solid var(--background-modifier-border);
-		border-radius: var(--radius-s);
-		cursor: grab;
 	}
 
 	.tb-card-text {
@@ -142,16 +151,17 @@
 	}
 
 	.tb-card-open-button {
-		&:focus-visible {
-			box-shadow: none;
-		}
-
 		position: absolute;
 		top: var(--size-4-1);
 		right: var(--size-4-1);
 		opacity: 0;
+
 		color: var(--link-color);
 		cursor: pointer;
+
+		&:focus-visible {
+			box-shadow: none;
+		}
 	}
 
 	.tb-card-tags {
@@ -165,7 +175,9 @@
 		margin-top: var(--size-4-1);
 	}
 
-	/* Path Filter */
+	/* --- Filters --- */
+
+	/* Path Filter Navigation */
 	.tb-path-filter {
 		display: grid;
 		grid-template-columns: 1fr auto 1fr;
@@ -180,61 +192,66 @@
 	.tb-path-text {
 		font-size: var(--font-ui-small);
 		color: var(--text-muted);
+		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		white-space: nowrap;
 	}
 
-	/* Filter */
+	/* Filter Bar */
 	.tb-filter-bar {
 		anchor-name: --tb-filter-dropdown-anchor;
 
 		display: flex;
 		align-items: center;
 		gap: var(--size-4-1);
+		min-height: var(--size-4-9);
+		padding: var(--size-4-1) var(--size-4-2);
+
 		background-color: var(--background-modifier-form-field);
 		border: solid var(--background-modifier-border);
-		padding: var(--size-4-1) var(--size-4-2);
-		min-height: var(--size-4-9);
 	}
 
 	.tb-filter-list {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
 		gap: var(--size-4-1);
 		flex: 1;
 		min-width: 0;
-		align-items: center;
 	}
 
 	.tb-filter-input {
 		flex: 1;
 		min-width: 100px;
-		border: none !important;
-		background: transparent !important;
-		box-shadow: none !important;
 		height: var(--size-4-6);
 		padding: 0 !important;
 		margin: 0 !important;
+
+		background: transparent !important;
+		border: none !important;
+		box-shadow: none !important;
 	}
 
+	/* Filter Dropdown (Popover) */
 	.tb-filter-dropdown {
+		position-anchor: --tb-filter-dropdown-anchor;
+		position-area: bottom span-right;
+
+		width: anchor-size(width);
+		max-height: 200px;
+		margin: var(--size-4-2) 0 0 0;
+		padding: 0;
+		overflow-y: auto;
+
 		background-color: var(--background-primary);
 		border: var(--border-width) solid var(--background-modifier-border);
 		border-radius: var(--radius-s);
 		box-shadow: var(--shadow-s);
-		max-height: 200px;
-		overflow-y: auto;
-
-		/* Anchor Positioning */
-		position-anchor: --tb-filter-dropdown-anchor;
-		position-area: bottom span-right;
-		width: anchor-size(width);
-		padding: 0;
-		margin: var(--size-4-2) 0 0 0;
 	}
 
 	.tb-filter-option {
+		padding: var(--size-4-2) var(--size-4-3);
+
 		&[aria-selected] {
 			cursor: pointer;
 		}
@@ -246,10 +263,10 @@
 		&[aria-selected="true"] {
 			background-color: var(--background-modifier-hover);
 		}
-
-		padding: var(--size-4-2) var(--size-4-3);
 	}
 }
+
+/* --- Global Utilities --- */
 
 .tb-drag-preview-tags {
 	display: flex;
