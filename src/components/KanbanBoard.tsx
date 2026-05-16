@@ -1,19 +1,10 @@
 import { For, type JSX, Show } from "solid-js";
+import { COLUMNS } from "../constants";
 import type { TickbanTask } from "../core/task-extractor";
 import { Column } from "./Column";
 import { useKanban } from "./KanbanContext";
 import { PathNavigation } from "./PathNavigation";
 import { TaskFilter } from "./TaskFilter";
-
-const COLUMNS: {
-	status: TickbanTask["status"];
-	title: string;
-	icon: string;
-}[] = [
-	{ status: "todo", title: "ToDo", icon: "square" },
-	{ status: "doing", title: "Doing", icon: "square-pen" },
-	{ status: "done", title: "Done", icon: "square-check-big" },
-];
 
 export function KanbanBoard(): JSX.Element {
 	const { filteredTasks, filterPath } = useKanban();

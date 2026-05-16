@@ -126,42 +126,19 @@
 		background-color: var(--background-primary);
 		border: var(--border-width) solid var(--background-modifier-border);
 		border-radius: var(--radius-s);
-		cursor: grab;
 
-		&:hover .tb-card-open-button {
-			opacity: 1;
-		}
-
-		&:has(:focus-visible) {
+		&:focus-visible {
 			box-shadow: var(--focus-ring-shadow);
 		}
 
+		&:hover,
 		&[data-dragging] {
-			color: var(--text-on-accent);
-			background-color: var(--interactive-accent);
-
-			* {
-				color: inherit;
-			}
+			background-color: var(--background-modifier-hover);
 		}
 	}
 
 	.tb-card-text {
-		padding-inline-end: var(--size-4-2);
-	}
-
-	.tb-card-open-button {
-		position: absolute;
-		top: var(--size-4-1);
-		right: var(--size-4-1);
-		opacity: 0;
-
-		color: var(--link-color);
-		cursor: pointer;
-
-		&:focus-visible {
-			box-shadow: none;
-		}
+		padding-inline-end: var(--size-4-1);
 	}
 
 	.tb-card-tags {

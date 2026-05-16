@@ -1,11 +1,12 @@
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
+import { Menu } from "obsidian";
 import { createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import { render } from "solid-js/web";
+import { COLUMNS } from "../constants";
 import type { TickbanTask } from "../core/task-extractor";
 import Button from "./Button";
-import { Icon } from "./Icon";
 import { useKanban } from "./KanbanContext";
 
 interface CardProps {
@@ -13,10 +14,18 @@ interface CardProps {
 }
 
 export function Card(props: CardProps) {
-	const { onTagClick, navigator, filterPath, setFilterPath, settings } =
-		useKanban();
+	const {
+		onTagClick,
+		navigator,
+		updater,
+		filterPath,
+		setFilterPath,
+		settings,
+	} = useKanban();
 	let ref: HTMLDivElement | undefined;
 	const [isDragging, setIsDragging] = createSignal(false);
+	let isOpen = false;
+	let lastClosed = 0;
 
 	onMount(() => {
 		if (!ref) return;
@@ -54,20 +63,70 @@ export function Card(props: CardProps) {
 		onCleanup(() => cleanup());
 	});
 
+	function createMenu(): Menu {
+		const menu = new Menu();
+
+		menu.addItem((item) =>
+			item
+				.setTitle("Open task in file")
+				.setIcon("external-link")
+				.onClick(() => navigator(props.task)),
+		);
+
+		menu.addSeparator();
+
+		for (const column of COLUMNS) {
+			menu.addItem((item) =>
+				item
+					.setTitle(column.title)
+					.setIcon(column.icon)
+					.setChecked(props.task.status === column.status)
+					.onClick(() => updater(props.task, column.status)),
+			);
+		}
+
+		isOpen = true;
+		menu.onHide(() => {
+			isOpen = false;
+			lastClosed = Date.now();
+		});
+
+		return menu;
+	}
+
+	function onClick(e: MouseEvent): void {
+		e.preventDefault();
+
+		if (Date.now() - lastClosed < 100) return;
+
+		const menu = createMenu();
+		menu.showAtMouseEvent(e);
+	}
+
+	function onKeyDown(e: KeyboardEvent): void {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+
+			const el = e.currentTarget as HTMLElement;
+			const { left, bottom } = el.getBoundingClientRect();
+
+			const menu = createMenu();
+			menu.showAtPosition({ x: left, y: bottom });
+		} else if (e.key === "Tab") {
+			// Focus trapping does not work in mobile view.
+			if (isOpen) e.preventDefault();
+		}
+	}
+
 	return (
-		<div ref={ref} class="tb-card" bool:data-dragging={isDragging()}>
+		<Button
+			ref={ref}
+			class="tb-card"
+			bool:data-dragging={isDragging()}
+			onClick={onClick}
+			onKeyDown={onKeyDown}
+		>
 			<div class="tb-card-text">{props.task.text}</div>
-			<button
-				type="button"
-				class="tb-card-open-button clickable-icon"
-				aria-label="Open task in file"
-				onClick={(e) => {
-					e.stopPropagation();
-					navigator(props.task);
-				}}
-			>
-				<Icon iconId="external-link" />
-			</button>
 
 			<Show when={props.task.tags.length > 0}>
 				<div class="tb-card-tags">
@@ -101,6 +160,6 @@ export function Card(props: CardProps) {
 					{props.task.filePath}
 				</Button>
 			</Show>
-		</div>
+		</Button>
 	);
 }

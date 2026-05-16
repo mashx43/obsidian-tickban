@@ -30,6 +30,7 @@ export interface KanbanContextValue {
 	activeTags: Accessor<string[]>;
 	onTagClick: (tag: string) => void;
 	navigator: TaskNavigator;
+	updater: TaskUpdater;
 	settings: TickbanSettings;
 }
 
@@ -78,8 +79,32 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		setTasks(extracted);
 	}
 
+	async function updateTaskStatus(
+		task: TickbanTask,
+		newStatus: TickbanTask["status"],
+	) {
+		if (task.status === newStatus) return;
+
+		// Optimistic UI update
+		setTasks((prev) =>
+			prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t)),
+		);
+		setPriorityTaskIds((prev) => [
+			task.id,
+			...prev.filter((id) => id !== task.id),
+		]);
+
+		// Actual vault update
+		isUpdating = true;
+		try {
+			await props.updater(task, newStatus);
+		} finally {
+			isUpdating = false;
+		}
+	}
+
 	onMount(() => {
-		const { contentEl, updater } = props;
+		const { contentEl } = props;
 		void loadTasks();
 
 		const handleRefresh = debounce(() => {
@@ -87,10 +112,6 @@ export function KanbanProvider(props: KanbanProviderProps) {
 				void loadTasks();
 			}
 		}, 500);
-
-		function finishUpdating() {
-			isUpdating = false;
-		}
 
 		contentEl.addEventListener(REFRESH_EVENT, handleRefresh);
 
@@ -101,22 +122,7 @@ export function KanbanProvider(props: KanbanProviderProps) {
 
 				const task = source.data.task as TickbanTask;
 				const newStatus = destination.data.status as TickbanTask["status"];
-				if (task.status === newStatus) return;
-
-				// Optimistic UI update
-				setTasks((prev) =>
-					prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t)),
-				);
-				setPriorityTaskIds((prev) => [
-					task.id,
-					...prev.filter((id) => id !== task.id),
-				]);
-
-				// Actual vault update
-				isUpdating = true;
-				void updater(task, newStatus)
-					.then(finishUpdating)
-					.catch(finishUpdating);
+				void updateTaskStatus(task, newStatus);
 			},
 		});
 
@@ -174,6 +180,7 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		activeTags,
 		onTagClick,
 		navigator: props.navigator,
+		updater: updateTaskStatus,
 		settings: props.settings,
 	};
 
