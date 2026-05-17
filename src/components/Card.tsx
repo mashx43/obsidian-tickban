@@ -11,6 +11,7 @@ import { useKanban } from "./KanbanContext";
 
 interface CardProps {
 	task: TickbanTask;
+	tabIndex: number;
 }
 
 export function Card(props: CardProps) {
@@ -122,6 +123,7 @@ export function Card(props: CardProps) {
 		<Button
 			ref={ref}
 			class="tb-card"
+			tabIndex={props.tabIndex}
 			bool:data-dragging={isDragging()}
 			onClick={onClick}
 			onKeyDown={onKeyDown}
