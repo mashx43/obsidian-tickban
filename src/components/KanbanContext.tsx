@@ -95,8 +95,8 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		]);
 
 		// Actual vault update
-		isUpdating = true;
 		try {
+			isUpdating = true;
 			await props.updater(task, newStatus);
 		} finally {
 			isUpdating = false;
@@ -107,11 +107,15 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		const { contentEl } = props;
 		void loadTasks();
 
-		const handleRefresh = debounce(() => {
-			if (!isUpdating) {
-				void loadTasks();
-			}
+		const debouncedRefresh = debounce(() => {
+			void loadTasks();
 		}, 500);
+
+		function handleRefresh() {
+			if (!isUpdating) {
+				debouncedRefresh();
+			}
+		}
 
 		contentEl.addEventListener(REFRESH_EVENT, handleRefresh);
 
