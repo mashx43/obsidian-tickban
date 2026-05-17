@@ -3,9 +3,8 @@
 	"name": "Tickban",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
+	"description": "Automatically collect tasks from across your entire Obsidian Vault and visualize/manage them in a Kanban board.",
 	"author": "mash43",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"authorUrl": "https://github.com/mashx43",
 	"isDesktopOnly": false
 }

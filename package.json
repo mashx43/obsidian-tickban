@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-tickban",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Automatically collect tasks from across your entire Obsidian Vault and visualize/manage them in a Kanban board.",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
