@@ -127,7 +127,6 @@
 		padding: var(--size-4-2);
 
 		background-color: var(--background-primary);
-		border: var(--border-width) solid var(--background-modifier-border);
 		border-radius: var(--radius-s);
 
 		&:focus-visible {
@@ -142,6 +141,26 @@
 
 	.tb-card-text {
 		padding-inline-end: var(--size-4-1);
+		overflow-wrap: break-word;
+	}
+
+	.tb-card-warning {
+		background-color: var(--background-modifier-error);
+
+		&:hover,
+		&[data-dragging] {
+			background-color: var(--background-modifier-error-hover);
+		}
+	}
+
+	.tb-card-warning-text {
+		display: flex;
+		align-items: center;
+		gap: var(--size-4-1);
+		margin-bottom: var(--size-4-2);
+
+		font-size: var(--font-ui-smaller);
+		color: var(--text-error);
 	}
 
 	.tb-card-tags {
@@ -153,6 +172,85 @@
 
 	.tb-card-path-button {
 		margin-top: var(--size-4-1);
+	}
+
+	/* Subtasks */
+	.tb-card-subtasks {
+		display: flex;
+		flex-direction: column;
+		gap: var(--size-4-1);
+		margin-top: var(--size-4-2);
+		padding-top: var(--size-4-2);
+		border-top: var(--border-width) solid var(--background-modifier-border);
+	}
+
+	.tb-card-subtask-item {
+		display: flex;
+		align-items: center;
+		gap: var(--size-4-2);
+		padding: var(--size-2-1) var(--size-2-2);
+		border-radius: var(--radius-s);
+
+		&:hover {
+			background-color: var(--background-modifier-hover);
+		}
+	}
+
+	.tb-card-subtask-checkbox {
+		width: var(--checkbox-size);
+		height: var(--checkbox-size);
+		flex-shrink: 0;
+		border-radius: var(--checkbox-radius);
+		border: var(--border-width) solid var(--checkbox-border-color);
+		position: relative;
+
+		.tb-card-subtask-item:hover > & {
+			border-color: var(--checkbox-border-color-hover);
+		}
+
+		&:not([data-status="todo"]) {
+			background-color: var(--checkbox-color);
+			border-color: var(--checkbox-color);
+
+			.tb-card-subtask-item:hover > & {
+				background-color: var(--checkbox-color-hover);
+				border-color: var(--checkbox-color-hover);
+			}
+		}
+
+		&[data-status="doing"]::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 8px;
+			height: 2px;
+			background-color: var(--checkbox-marker-color);
+		}
+
+		&[data-status="done"]::after {
+			content: "✓";
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			color: var(--checkbox-marker-color);
+			font-size: var(--font-ui-smaller);
+			font-weight: bold;
+		}
+	}
+
+	.tb-card-subtask-text {
+		font-size: var(--font-ui-smaller);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+
+		[data-status="done"] + & {
+			color: var(--checklist-done-color);
+			text-decoration: var(--checklist-done-decoration);
+		}
 	}
 
 	/* --- Filters --- */

@@ -9,6 +9,7 @@ export interface TickbanTask {
 	status: "todo" | "doing" | "done";
 	tags: string[];
 	mtime: number;
+	parentTaskId?: string;
 }
 
 export type TaskExtractor = (
@@ -60,15 +61,15 @@ export function createTaskExtractor(app: App): TaskExtractor {
 			const cache = app.metadataCache.getFileCache(file);
 			if (!cache || !cache.listItems) continue;
 
-			const taskItems = cache.listItems.filter(
-				(item) => item.task !== undefined,
-			);
-			if (taskItems.length === 0) continue;
-
 			const content = await app.vault.cachedRead(file);
 			const lines = content.split("\n");
 
-			for (const item of taskItems) {
+			const taskMap = new Map<number, TickbanTask>();
+			const fileTasks: TickbanTask[] = [];
+
+			for (const item of cache.listItems) {
+				if (item.task === undefined) continue;
+
 				const lineNum = item.position.start.line;
 				const lineText = lines[lineNum];
 				if (!lineText) continue;
@@ -78,22 +79,16 @@ export function createTaskExtractor(app: App): TaskExtractor {
 					status = "todo";
 				} else if (item.task === "/") {
 					status = "doing";
-				} else if (item.task?.toLowerCase() === "x") {
-					if (thresholdMs && now - file.stat.mtime > thresholdMs) {
-						continue;
-					}
-
+				} else if (item.task.toLowerCase() === "x") {
+					if (thresholdMs && now - file.stat.mtime > thresholdMs) continue;
 					status = "done";
 				} else {
-					continue; // Ignore other statuses like '-', '>', etc.
+					continue;
 				}
 
-				// Extract text after the checkbox
-				const match = lineText.match(/^[\s]*[-*+]\s*\[.*?\]\s*(.*)/);
-				let text = match?.[1]?.trim();
-				if (!text) continue;
+				const match = lineText.match(/^[\s]*[-*+]\s*\[.\]\s*(.*)/);
+				let text = match?.[1]?.trim() || "Untitled Task";
 
-				// Extract tags (#tag) and remove them from text for cleaner display
 				const tags: string[] = [];
 				const tagMatches = text.match(
 					/(?:^|\s)#([\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF/-]+)/g,
@@ -103,7 +98,7 @@ export function createTaskExtractor(app: App): TaskExtractor {
 					text = text.replace(tag, "").trim();
 				}
 
-				tasks.push({
+				const task: TickbanTask = {
 					id: `${file.path}:${lineNum}`,
 					filePath: file.path,
 					line: lineNum,
@@ -111,8 +106,26 @@ export function createTaskExtractor(app: App): TaskExtractor {
 					status,
 					tags,
 					mtime: file.stat.mtime,
-				});
+				};
+				taskMap.set(lineNum, task);
+				fileTasks.push(task);
 			}
+
+			// Assign parentTaskId
+			for (const item of cache.listItems) {
+				const task = taskMap.get(item.position.start.line);
+				if (!task) continue;
+
+				const isRoot = item.parent < 0;
+				if (isRoot) continue;
+
+				const parentTask = taskMap.get(item.parent);
+				if (parentTask && parentTask.id !== task.id) {
+					task.parentTaskId = parentTask.id;
+				}
+			}
+
+			tasks.push(...fileTasks);
 		}
 
 		return tasks.sort((a, b) => {

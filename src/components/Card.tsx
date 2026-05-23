@@ -2,11 +2,19 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
 import { Menu } from "obsidian";
-import { createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import {
+	createMemo,
+	createSignal,
+	For,
+	onCleanup,
+	onMount,
+	Show,
+} from "solid-js";
 import { render } from "solid-js/web";
 import { COLUMNS } from "../constants";
 import type { TickbanTask } from "../core/task-extractor";
 import Button from "./Button";
+import { Icon } from "./Icon";
 import { useKanban } from "./KanbanContext";
 
 interface CardProps {
@@ -16,17 +24,39 @@ interface CardProps {
 
 export function Card(props: CardProps) {
 	const {
+		tasks,
 		onTagClick,
 		navigator,
 		updater,
 		filterPath,
 		setFilterPath,
+		setZoomTaskId,
 		settings,
 	} = useKanban();
 	let ref: HTMLDivElement | undefined;
 	const [isDragging, setIsDragging] = createSignal(false);
 	let isOpen = false;
 	let lastClosed = 0;
+
+	const subtasks = createMemo(() =>
+		tasks().filter((t) => t.parentTaskId === props.task.id),
+	);
+
+	const hasUnfinishedDescendants = createMemo(() => {
+		const allTasks = tasks();
+		function checkUnfinished(taskId: string): boolean {
+			const children = allTasks.filter((t) => t.parentTaskId === taskId);
+			for (const child of children) {
+				if (child.status !== "done" || checkUnfinished(child.id)) return true;
+			}
+			return false;
+		}
+		return checkUnfinished(props.task.id);
+	});
+
+	const hasWarning = createMemo(
+		() => props.task.status === "done" && hasUnfinishedDescendants(),
+	);
 
 	onMount(() => {
 		if (!ref) return;
@@ -74,6 +104,14 @@ export function Card(props: CardProps) {
 				.onClick(() => navigator(props.task)),
 		);
 
+		menu.addItem((item) =>
+			item
+				.setTitle("Zoom into this task")
+				.setIcon("zoom-in")
+				.setDisabled(subtasks().length === 0)
+				.onClick(() => setZoomTaskId(props.task.id)),
+		);
+
 		menu.addSeparator();
 
 		for (const column of COLUMNS) {
@@ -119,16 +157,55 @@ export function Card(props: CardProps) {
 		}
 	}
 
+	function toggleSubtask(task: TickbanTask) {
+		let nextStatus: TickbanTask["status"] = "todo";
+		if (task.status === "todo") nextStatus = "doing";
+		else if (task.status === "doing") nextStatus = "done";
+
+		void updater(task, nextStatus);
+	}
+
 	return (
 		<Button
 			ref={ref}
 			class="tb-card"
+			classList={{ "tb-card-warning": hasWarning() }}
 			tabIndex={props.tabIndex}
 			bool:data-dragging={isDragging()}
 			onClick={onClick}
 			onKeyDown={onKeyDown}
 		>
+			<Show when={hasWarning()}>
+				<div class="tb-card-warning-text">
+					<Icon iconId="alert-triangle" />
+					Unfinished subtasks
+				</div>
+			</Show>
+
 			<div class="tb-card-text">{props.task.text}</div>
+
+			<Show when={subtasks().length}>
+				<div class="tb-card-subtasks">
+					<For each={subtasks()}>
+						{(subtask) => (
+							<Button
+								class="tb-card-subtask-item"
+								tabIndex={-1}
+								onClick={(e) => {
+									e.stopPropagation();
+									toggleSubtask(subtask);
+								}}
+							>
+								<span
+									class="tb-card-subtask-checkbox"
+									data-status={subtask.status}
+								/>
+								<span class="tb-card-subtask-text">{subtask.text}</span>
+							</Button>
+						)}
+					</For>
+				</div>
+			</Show>
 
 			<Show when={props.task.tags.length > 0}>
 				<div class="tb-card-tags">

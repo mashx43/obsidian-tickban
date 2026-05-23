@@ -25,6 +25,9 @@ export interface KanbanContextValue {
 	filteredTasks: Accessor<TickbanTask[]>;
 	filterPath: Accessor<FilterPath>;
 	setFilterPath: (path: FilterPath) => void;
+	zoomTaskId: Accessor<string | undefined>;
+	setZoomTaskId: (id: string | undefined) => void;
+	zoomTask: Accessor<TickbanTask | undefined>;
 	tagStore: Record<string, boolean>;
 	setTagStore: SetStoreFunction<Record<string, boolean>>;
 	activeTags: Accessor<string[]>;
@@ -61,11 +64,18 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		active: activeTags,
 	} = createTags(tasks);
 	const [filterPath, setFilterPath] = createSignal<FilterPath>();
+	const [zoomTaskId, setZoomTaskId] = createSignal<string>();
 	const [priorityTaskIds, setPriorityTaskIds] = createSignal<string[]>([]);
 	const priorityMap = createMemo(
 		() => new Map(priorityTaskIds().map((id, index) => [id, index])),
 	);
 	let isUpdating = false;
+
+	const zoomTask = createMemo(() => {
+		const id = zoomTaskId();
+		if (!id) return undefined;
+		return tasks().find((t) => t.id === id);
+	});
 
 	async function loadTasks() {
 		const { extractor, settings } = props;
@@ -139,20 +149,26 @@ export function KanbanProvider(props: KanbanProviderProps) {
 	const filteredTasks = createMemo(() => {
 		const tags = activeTags();
 		const path = filterPath();
+		const zoomId = zoomTaskId();
 		const priorities = priorityMap();
 		const hasTags = !!tags.length;
 
-		const filtered =
-			!hasTags && !path
-				? tasks()
-				: tasks().filter((task) => {
-						const matchesPath = !path || task.filePath === path;
-						if (!matchesPath) return false;
+		const filtered = tasks().filter((task) => {
+			// Hierarchy filter:
+			// If zoomed, show only children of the zoomed task.
+			// If not zoomed, show only top-level tasks.
+			const matchesHierarchy = zoomId
+				? task.parentTaskId === zoomId
+				: !task.parentTaskId;
+			if (!matchesHierarchy) return false;
 
-						const matchesTags =
-							!hasTags || tags.every((tag) => task.tags.includes(tag));
-						return matchesTags;
-					});
+			const matchesPath = !path || task.filePath === path;
+			if (!matchesPath) return false;
+
+			const matchesTags =
+				!hasTags || tags.every((tag) => task.tags.includes(tag));
+			return matchesTags;
+		});
 
 		if (!priorities.size) return filtered;
 
@@ -179,6 +195,9 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		filteredTasks,
 		filterPath,
 		setFilterPath,
+		zoomTaskId,
+		setZoomTaskId,
+		zoomTask,
 		tagStore,
 		setTagStore,
 		activeTags,

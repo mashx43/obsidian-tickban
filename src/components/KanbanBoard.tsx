@@ -7,7 +7,7 @@ import { PathNavigation } from "./PathNavigation";
 import { TaskFilter } from "./TaskFilter";
 
 export function KanbanBoard(): JSX.Element {
-	const { filteredTasks, filterPath } = useKanban();
+	const { filteredTasks, filterPath, zoomTaskId } = useKanban();
 
 	function filterByStatus(status: TickbanTask["status"]): TickbanTask[] {
 		return filteredTasks().filter((t) => t.status === status);
@@ -15,7 +15,7 @@ export function KanbanBoard(): JSX.Element {
 
 	return (
 		<div class="tb-container">
-			<Show when={filterPath()}>
+			<Show when={filterPath() || zoomTaskId()}>
 				<PathNavigation />
 			</Show>
 			<TaskFilter />
