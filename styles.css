@@ -298,16 +298,17 @@
 		min-width: 0;
 	}
 
-	.tb-filter-input {
+	/* Increased selector specificity to override the styles. */
+	input.tb-filter-input {
 		flex: 1;
 		min-width: 100px;
 		height: var(--size-4-6);
-		padding: 0 !important;
-		margin: 0 !important;
+		padding: 0;
+		margin: 0;
 
-		background: transparent !important;
-		border: none !important;
-		box-shadow: none !important;
+		background: transparent;
+		border: none;
+		box-shadow: none;
 	}
 
 	/* Filter Dropdown (Popover) */
