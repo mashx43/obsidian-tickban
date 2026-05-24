@@ -48,14 +48,12 @@
 		border-radius: var(--input-radius);
 		font-weight: var(--input-font-weight);
 
+		transition:
+			box-shadow 0.15s ease-in-out,
+			border 0.15s ease-in-out;
+
 		&:focus-within {
 			border-color: var(--background-modifier-border-focus);
-			transition:
-				box-shadow 0.15s ease-in-out,
-				border 0.15s ease-in-out;
-		}
-
-		&:has(:focus-visible) {
 			box-shadow: var(--focus-ring-shadow);
 		}
 	}
