@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-tickban",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "Automatically collect tasks from across your entire Obsidian Vault and visualize/manage them in a Kanban board.",
 	"main": "main.js",
 	"type": "module",
