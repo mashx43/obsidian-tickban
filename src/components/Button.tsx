@@ -4,7 +4,9 @@ export default function Button(props: ComponentProps<"div">): JSX.Element {
 	function onKeyDown(e: KeyboardEvent) {
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
-			(e.target as HTMLButtonElement)?.click?.();
+			e.currentTarget?.dispatchEvent(
+				new MouseEvent("click", { bubbles: true }),
+			);
 		}
 	}
 
