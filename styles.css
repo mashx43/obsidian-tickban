@@ -294,52 +294,21 @@
 		gap: var(--size-4-1);
 		flex: 1;
 		min-width: 0;
+		overflow: hidden;
 	}
 
 	/* Increased selector specificity to override the styles. */
 	input.tb-filter-input {
 		flex: 1;
-		min-width: 100px;
+		min-width: 140px;
 		height: var(--size-4-6);
 		padding: 0;
 		margin: 0;
+		padding-inline-start: var(--size-4-1);
 
 		background: transparent;
 		border: none;
 		box-shadow: none;
-	}
-
-	/* Filter Dropdown (Popover) */
-	.tb-filter-dropdown {
-		position-anchor: --tb-filter-dropdown-anchor;
-		position-area: bottom span-right;
-
-		width: anchor-size(width);
-		max-height: 200px;
-		margin: var(--size-4-2) 0 0 0;
-		padding: 0;
-		overflow-y: auto;
-
-		background-color: var(--background-primary);
-		border: var(--border-width) solid var(--background-modifier-border);
-		border-radius: var(--radius-s);
-		box-shadow: var(--shadow-s);
-	}
-
-	.tb-filter-option {
-		padding: var(--size-4-2) var(--size-4-3);
-
-		&[aria-selected] {
-			cursor: pointer;
-		}
-
-		&:not([aria-selected]) {
-			color: var(--text-muted);
-		}
-
-		&[aria-selected="true"] {
-			background-color: var(--background-modifier-hover);
-		}
 	}
 }
 

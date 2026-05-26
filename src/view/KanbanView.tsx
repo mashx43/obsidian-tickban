@@ -63,9 +63,10 @@ export class TickbanView extends ItemView {
 	renderSolid() {
 		this.disposeSolid?.();
 
-		const { contentEl, extractor, updater, navigator } = this;
+		const { contentEl, extractor, updater, navigator, app } = this;
 		const { settings } = this.plugin;
 		const props = {
+			app,
 			extractor,
 			updater,
 			navigator,

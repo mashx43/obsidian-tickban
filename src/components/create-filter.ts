@@ -4,7 +4,7 @@ import type { FilterItem } from "./TaskFilter";
 
 export function createFilter(context: KanbanContextValue) {
 	const [inputValue, setInputValue] = createSignal("");
-	const suggestions = createSuggestions(context, inputValue);
+	const allItems = createAllItems(context);
 
 	function clearAllTags() {
 		const { activeTags, setTagStore } = context;
@@ -20,59 +20,43 @@ export function createFilter(context: KanbanContextValue) {
 	return {
 		inputValue,
 		setInputValue,
-		suggestions,
+		allItems,
 		clearAllTags,
 	};
 }
 
-function createSuggestions(
-	context: KanbanContextValue,
-	inputValue: Accessor<string>,
-): Accessor<FilterItem[]> {
+function createAllItems(context: KanbanContextValue): Accessor<FilterItem[]> {
 	const { filteredTasks, tagStore, filterPath } = context;
 
-	const availableTags = createMemo(() => {
-		const tags = new Set<string>();
-		for (const task of filteredTasks()) {
+	return createMemo<FilterItem[]>(() => {
+		const tasks = filteredTasks();
+		const tagSet = new Set<string>();
+		const pathSet = new Set<string>();
+
+		for (const task of tasks) {
+			pathSet.add(task.filePath);
+
 			for (const tag of task.tags) {
-				tags.add(tag);
+				if (!tagStore[tag]) {
+					tagSet.add(tag);
+				}
 			}
 		}
-		return Array.from(tags).sort();
-	});
 
-	const availablePaths = createMemo(() => {
-		const paths = new Set<string>();
-		for (const task of filteredTasks()) {
-			paths.add(task.filePath);
-		}
-		return Array.from(paths).sort();
-	});
-
-	return createMemo<FilterItem[]>(() => {
-		const query = inputValue().toLowerCase();
 		const items: FilterItem[] = [];
 
-		// Tags
-		for (const tag of availableTags()) {
-			if (!tagStore[tag] && searchText(tag, query)) {
-				items.push({ type: "tag", value: tag });
-			}
+		const sortedTags = Array.from(tagSet).sort();
+		for (const tag of sortedTags) {
+			items.push({ type: "tag", value: tag });
 		}
 
-		// Paths
-		if (filterPath()) return items;
-
-		for (const path of availablePaths()) {
-			if (searchText(path, query)) {
+		if (!filterPath()) {
+			const sortedPaths = Array.from(pathSet).sort();
+			for (const path of sortedPaths) {
 				items.push({ type: "path", value: path });
 			}
 		}
 
 		return items;
 	});
-}
-
-function searchText(text: string, query: string): boolean {
-	return !query || text.toLowerCase().includes(query);
 }

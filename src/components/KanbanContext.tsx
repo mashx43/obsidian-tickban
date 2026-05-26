@@ -1,7 +1,7 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { TaskNavigator } from "core/task-navigator";
 import type { TaskUpdater } from "core/task-updater";
-import { debounce } from "obsidian";
+import { type App, debounce } from "obsidian";
 import type { TickbanSettings } from "settings";
 import {
 	type Accessor,
@@ -21,6 +21,7 @@ import { createTags } from "../primitives/create-tags";
 export type FilterPath = string | undefined;
 
 export interface KanbanContextValue {
+	app: App;
 	tasks: Accessor<TickbanTask[]>;
 	filteredTasks: Accessor<TickbanTask[]>;
 	filterPath: Accessor<FilterPath>;
@@ -48,6 +49,7 @@ export function useKanban() {
 }
 
 interface KanbanProviderProps {
+	app: App;
 	extractor: TaskExtractor;
 	updater: TaskUpdater;
 	navigator: TaskNavigator;
@@ -191,6 +193,7 @@ export function KanbanProvider(props: KanbanProviderProps) {
 	}
 
 	const value: KanbanContextValue = {
+		app: props.app,
 		tasks,
 		filteredTasks,
 		filterPath,
