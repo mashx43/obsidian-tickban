@@ -13,7 +13,7 @@ export default class TickbanPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This creates an icon in the left ribbon.
-		this.addRibbonIcon("columns-3", "Open tickban", async () => {
+		this.addRibbonIcon("kanban", "Open tickban", async () => {
 			await this.activateView();
 		});
 

@@ -41,7 +41,7 @@ export class TickbanView extends ItemView {
 	}
 
 	getIcon() {
-		return "columns-3";
+		return "kanban";
 	}
 
 	async onOpen() {
