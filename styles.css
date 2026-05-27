@@ -176,6 +176,7 @@
 	.tb-card-subtasks {
 		display: flex;
 		flex-direction: column;
+		align-items: flex-start;
 		gap: var(--size-4-1);
 		margin-top: var(--size-4-2);
 		padding-top: var(--size-4-2);
@@ -185,67 +186,22 @@
 	.tb-card-subtask-item {
 		display: flex;
 		align-items: center;
-		gap: var(--size-4-2);
 		padding: var(--size-2-1) var(--size-2-2);
 		border-radius: var(--radius-s);
+		max-width: stretch;
 
 		&:hover {
 			background-color: var(--background-modifier-hover);
 		}
 	}
 
-	.tb-card-subtask-checkbox {
-		width: var(--checkbox-size);
-		height: var(--checkbox-size);
-		flex-shrink: 0;
-		border-radius: var(--checkbox-radius);
-		border: var(--border-width) solid var(--checkbox-border-color);
-		position: relative;
-
-		.tb-card-subtask-item:hover > & {
-			border-color: var(--checkbox-border-color-hover);
-		}
-
-		&:not([data-status="todo"]) {
-			background-color: var(--checkbox-color);
-			border-color: var(--checkbox-color);
-
-			.tb-card-subtask-item:hover > & {
-				background-color: var(--checkbox-color-hover);
-				border-color: var(--checkbox-color-hover);
-			}
-		}
-
-		&[data-status="doing"]::after {
-			content: "";
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			width: 8px;
-			height: 2px;
-			background-color: var(--checkbox-marker-color);
-		}
-
-		&[data-status="done"]::after {
-			content: "✓";
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			color: var(--checkbox-marker-color);
-			font-size: var(--font-ui-smaller);
-			font-weight: bold;
-		}
-	}
-
 	.tb-card-subtask-text {
-		font-size: var(--font-ui-smaller);
+		font-size: var(--font-ui-small);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 
-		[data-status="done"] + & {
+		[data-task="x"] + & {
 			color: var(--checklist-done-color);
 			text-decoration: var(--checklist-done-decoration);
 		}

@@ -165,6 +165,12 @@ export function Card(props: CardProps) {
 		void updater(task, nextStatus);
 	}
 
+	function getDataTask(status: TickbanTask["status"]): string {
+		if (status === "todo") return " ";
+		if (status === "doing") return "/";
+		return "x";
+	}
+
 	return (
 		<Button
 			ref={ref}
@@ -188,20 +194,21 @@ export function Card(props: CardProps) {
 				<div class="tb-card-subtasks">
 					<For each={subtasks()}>
 						{(subtask) => (
-							<Button
+							<label
 								class="tb-card-subtask-item"
-								tabIndex={-1}
-								onClick={(e) => {
-									e.stopPropagation();
-									toggleSubtask(subtask);
-								}}
+								onClick={(e) => e.stopPropagation()}
 							>
-								<span
-									class="tb-card-subtask-checkbox"
-									data-status={subtask.status}
+								<input
+									type="checkbox"
+									checked={subtask.status !== "todo"}
+									data-task={getDataTask(subtask.status)}
+									onClick={(e) => {
+										e.preventDefault();
+										toggleSubtask(subtask);
+									}}
 								/>
 								<span class="tb-card-subtask-text">{subtask.text}</span>
-							</Button>
+							</label>
 						)}
 					</For>
 				</div>
