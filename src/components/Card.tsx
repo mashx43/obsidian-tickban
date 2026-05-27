@@ -13,6 +13,7 @@ import {
 import { render } from "solid-js/web";
 import { COLUMNS } from "../constants";
 import type { TickbanTask } from "../core/task-extractor";
+import { getNextStatus } from "../core/task-status";
 import Button from "./Button";
 import { Icon } from "./Icon";
 import { useKanban } from "./KanbanContext";
@@ -47,7 +48,7 @@ export function Card(props: CardProps) {
 		function checkUnfinished(taskId: string): boolean {
 			const children = allTasks.filter((t) => t.parentTaskId === taskId);
 			for (const child of children) {
-				if (child.status !== "done" || checkUnfinished(child.id)) return true;
+				if (child.status !== "x" || checkUnfinished(child.id)) return true;
 			}
 			return false;
 		}
@@ -55,7 +56,7 @@ export function Card(props: CardProps) {
 	});
 
 	const hasWarning = createMemo(
-		() => props.task.status === "done" && hasUnfinishedDescendants(),
+		() => props.task.status === "x" && hasUnfinishedDescendants(),
 	);
 
 	onMount(() => {
@@ -158,17 +159,7 @@ export function Card(props: CardProps) {
 	}
 
 	function toggleSubtask(task: TickbanTask) {
-		let nextStatus: TickbanTask["status"] = "todo";
-		if (task.status === "todo") nextStatus = "doing";
-		else if (task.status === "doing") nextStatus = "done";
-
-		void updater(task, nextStatus);
-	}
-
-	function getDataTask(status: TickbanTask["status"]): string {
-		if (status === "todo") return " ";
-		if (status === "doing") return "/";
-		return "x";
+		void updater(task, getNextStatus(task.status));
 	}
 
 	return (
@@ -200,8 +191,8 @@ export function Card(props: CardProps) {
 							>
 								<input
 									type="checkbox"
-									checked={subtask.status !== "todo"}
-									data-task={getDataTask(subtask.status)}
+									checked={subtask.status !== " "}
+									data-task={subtask.status}
 									onClick={(e) => {
 										e.preventDefault();
 										toggleSubtask(subtask);

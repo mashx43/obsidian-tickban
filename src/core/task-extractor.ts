@@ -1,12 +1,13 @@
 import type { App } from "obsidian";
 import pm from "picomatch";
+import { parseStatus, type TaskStatus } from "./task-status";
 
 export interface TickbanTask {
 	id: string; // `${file.path}:${line}`
 	filePath: string;
 	line: number;
 	text: string;
-	status: "todo" | "doing" | "done";
+	status: TaskStatus;
 	tags: string[];
 	mtime: number;
 	parentTaskId?: string;
@@ -74,15 +75,11 @@ export function createTaskExtractor(app: App): TaskExtractor {
 				const lineText = lines[lineNum];
 				if (!lineText) continue;
 
-				let status: TickbanTask["status"];
-				if (item.task === " ") {
-					status = "todo";
-				} else if (item.task === "/") {
-					status = "doing";
-				} else if (item.task.toLowerCase() === "x") {
-					if (thresholdMs && now - file.stat.mtime > thresholdMs) continue;
-					status = "done";
-				} else {
+				const status = parseStatus(item.task);
+				if (
+					!status ||
+					(status === "x" && thresholdMs && now - file.stat.mtime > thresholdMs)
+				) {
 					continue;
 				}
 

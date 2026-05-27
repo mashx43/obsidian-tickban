@@ -14,10 +14,6 @@ export function createTaskUpdater(app: App): TaskUpdater {
 		const file = app.vault.getFileByPath(task.filePath);
 		if (!file) return;
 
-		let statusChar = " ";
-		if (newStatus === "doing") statusChar = "/";
-		if (newStatus === "done") statusChar = "x";
-
 		await app.vault.process(file, (content) => {
 			const lines = content.split("\n");
 			const lineText = lines[task.line];
@@ -27,7 +23,7 @@ export function createTaskUpdater(app: App): TaskUpdater {
 				// while preserving the indentation and the marker (+, *, or -).
 				lines[task.line] = lineText.replace(
 					/^(\s*[-*+]\s*\[).*?(\])/,
-					`$1${statusChar}$2`,
+					`$1${newStatus}$2`,
 				);
 			}
 
