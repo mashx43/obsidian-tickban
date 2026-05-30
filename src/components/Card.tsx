@@ -197,7 +197,9 @@ export function Card(props: CardProps) {
 										toggleSubtask(subtask);
 									}}
 								/>
-								<span class="tb-card-subtask-text">{subtask.text}</span>
+								<span class="tb-card-subtask-text tb-ellipsis-text">
+									{subtask.text}
+								</span>
 							</label>
 						)}
 					</For>

@@ -205,9 +205,6 @@
 
 	.tb-card-subtask-text {
 		font-size: var(--font-ui-small);
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
 
 		[data-task="x"] + & {
 			color: var(--checklist-done-color);
@@ -232,9 +229,6 @@
 	.tb-path-text {
 		font-size: var(--font-ui-small);
 		color: var(--text-muted);
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 
 	/* Filter Bar */

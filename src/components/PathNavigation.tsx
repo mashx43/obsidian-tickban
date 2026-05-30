@@ -20,7 +20,7 @@ export function PathNavigation(): JSX.Element {
 				<Icon iconId="arrow-left" />
 				Back
 			</Button>
-			<div class="tb-path-text">{displayText()}</div>
+			<div class="tb-path-text tb-ellipsis-text">{displayText()}</div>
 		</div>
 	);
 }
