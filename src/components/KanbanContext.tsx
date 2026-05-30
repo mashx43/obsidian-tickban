@@ -1,6 +1,5 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import type { TaskNavigator } from "core/task-navigator";
-import type { TaskUpdater } from "core/task-updater";
+import { TaskStatus } from "core/task-status";
 import { type App, debounce } from "obsidian";
 import type { TickbanSettings } from "settings";
 import {
@@ -15,7 +14,12 @@ import {
 } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { REFRESH_EVENT } from "../constants";
-import type { TaskExtractor, TickbanTask } from "../core/task-extractor";
+import {
+	compileGlob,
+	extractTasks,
+	type TickbanTask,
+} from "../core/task-extractor";
+import { updateTaskInVault } from "../core/task-updater";
 import { createTags } from "../primitives/create-tags";
 
 export type FilterPath = string | undefined;
@@ -33,8 +37,7 @@ export interface KanbanContextValue {
 	setTagStore: SetStoreFunction<Record<string, boolean>>;
 	activeTags: Accessor<string[]>;
 	onTagClick: (tag: string) => void;
-	navigator: TaskNavigator;
-	updater: TaskUpdater;
+	updater: (task: TickbanTask, newStatus: TaskStatus) => Promise<void>;
 	settings: TickbanSettings;
 }
 
@@ -50,9 +53,6 @@ export function useKanban() {
 
 interface KanbanProviderProps {
 	app: App;
-	extractor: TaskExtractor;
-	updater: TaskUpdater;
-	navigator: TaskNavigator;
 	settings: TickbanSettings;
 	contentEl: HTMLElement;
 	children: JSX.Element;
@@ -79,14 +79,20 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		return tasks().find((t) => t.id === id);
 	});
 
-	async function loadTasks() {
-		const { extractor, settings } = props;
-		const { includeGlob, excludeGlob, hideDoneAfterDays } = settings;
+	const isIncluded = createMemo(() =>
+		compileGlob(props.settings.includeGlob, () => true),
+	);
+	const isExcluded = createMemo(() =>
+		compileGlob(props.settings.excludeGlob, () => false),
+	);
 
-		const extracted = await extractor(
-			includeGlob,
-			excludeGlob,
-			hideDoneAfterDays,
+	async function loadTasks() {
+		const { app, settings } = props;
+		const extracted = await extractTasks(
+			app,
+			isIncluded(),
+			isExcluded(),
+			settings.hideDoneAfterDays,
 		);
 		setTasks(extracted);
 	}
@@ -109,7 +115,7 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		// Actual vault update
 		try {
 			isUpdating = true;
-			await props.updater(task, newStatus);
+			await updateTaskInVault(props.app, task, newStatus);
 		} finally {
 			isUpdating = false;
 		}
@@ -205,7 +211,6 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		setTagStore,
 		activeTags,
 		onTagClick,
-		navigator: props.navigator,
 		updater: updateTaskStatus,
 		settings: props.settings,
 	};

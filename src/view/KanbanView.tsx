@@ -3,15 +3,6 @@ import { render } from "solid-js/web";
 import { KanbanBoard } from "../components/KanbanBoard";
 import { KanbanProvider } from "../components/KanbanContext";
 import { REFRESH_EVENT } from "../constants";
-import {
-	createTaskExtractor,
-	type TaskExtractor,
-} from "../core/task-extractor";
-import {
-	createTaskNavigator,
-	type TaskNavigator,
-} from "../core/task-navigator";
-import { createTaskUpdater, type TaskUpdater } from "../core/task-updater";
 import type TickbanPlugin from "../main";
 
 export const TICKBAN_VIEW_TYPE = "tickban-view";
@@ -20,16 +11,10 @@ export class TickbanView extends ItemView {
 	plugin: TickbanPlugin;
 	disposeSolid?: () => void;
 	file: TFile | null = null;
-	private extractor: TaskExtractor;
-	private updater: TaskUpdater;
-	private navigator: TaskNavigator;
 
 	constructor(leaf: WorkspaceLeaf, plugin: TickbanPlugin) {
 		super(leaf);
 		this.plugin = plugin;
-		this.extractor = createTaskExtractor(this.app);
-		this.updater = createTaskUpdater(this.app);
-		this.navigator = createTaskNavigator(this.app);
 	}
 
 	getViewType() {
@@ -63,13 +48,10 @@ export class TickbanView extends ItemView {
 	renderSolid() {
 		this.disposeSolid?.();
 
-		const { contentEl, extractor, updater, navigator, app } = this;
+		const { contentEl, app } = this;
 		const { settings } = this.plugin;
 		const props = {
 			app,
-			extractor,
-			updater,
-			navigator,
 			settings,
 			contentEl,
 		};

@@ -1,6 +1,7 @@
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
+import { revealTaskInFile } from "core/task-navigator";
 import { Menu } from "obsidian";
 import {
 	createMemo,
@@ -25,9 +26,9 @@ interface CardProps {
 
 export function Card(props: CardProps) {
 	const {
+		app,
 		tasks,
 		onTagClick,
-		navigator,
 		updater,
 		filterPath,
 		setFilterPath,
@@ -102,7 +103,7 @@ export function Card(props: CardProps) {
 			item
 				.setTitle("Open task in file")
 				.setIcon("external-link")
-				.onClick(() => navigator(props.task)),
+				.onClick(() => revealTaskInFile(app, props.task)),
 		);
 
 		menu.addItem((item) =>
