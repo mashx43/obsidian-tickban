@@ -37,6 +37,8 @@ export function Card(props: CardProps) {
 	);
 
 	const hasUnfinishedDescendants = createMemo(() => {
+		if (!subtasks().length) return false;
+
 		const allTasks = tasks();
 		function checkUnfinished(taskId: string): boolean {
 			const children = allTasks.filter((t) => t.parentTaskId === taskId);
