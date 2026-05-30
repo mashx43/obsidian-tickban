@@ -155,7 +155,6 @@ export function Card(props: CardProps) {
 		<Button
 			ref={ref}
 			class="tb-card"
-			classList={{ "tb-card-warning": hasWarning() }}
 			tabIndex={props.tabIndex}
 			bool:data-dragging={isDragging()}
 			onClick={onClick}

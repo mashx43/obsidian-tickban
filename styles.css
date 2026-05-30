@@ -150,15 +150,6 @@
 		overflow-wrap: break-word;
 	}
 
-	.tb-card-warning {
-		background-color: var(--background-modifier-error);
-
-		&:hover,
-		&[data-dragging] {
-			background-color: var(--background-modifier-error-hover);
-		}
-	}
-
 	.tb-card-warning-text {
 		display: flex;
 		align-items: center;
