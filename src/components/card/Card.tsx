@@ -12,10 +12,13 @@ import {
 	Show,
 } from "solid-js";
 import { render } from "solid-js/web";
-import { getNextStatus, reveal, type TickbanTask } from "task";
-import { COLUMNS } from "../constants";
-import Button from "./ui/Button";
-import { Icon } from "./ui/Icon";
+import { reveal, type TickbanTask } from "task";
+import { COLUMNS } from "../../constants";
+import Button from "../ui/Button";
+import { Icon } from "../ui/Icon";
+import CardFilePath from "./CardFilePath";
+import CardSubTasks from "./CardSubtasks";
+import CardTags from "./CardTags";
 
 interface CardProps {
 	task: TickbanTask;
@@ -23,16 +26,7 @@ interface CardProps {
 }
 
 export function Card(props: CardProps) {
-	const {
-		app,
-		tasks,
-		onTagClick,
-		updater,
-		filterPath,
-		setFilterPath,
-		setZoomTaskId,
-		settings,
-	} = useKanban();
+	const { app, tasks, updater, setZoomTaskId } = useKanban();
 	let ref: HTMLDivElement | undefined;
 	const [isDragging, setIsDragging] = createSignal(false);
 	let isOpen = false;
@@ -157,10 +151,6 @@ export function Card(props: CardProps) {
 		}
 	}
 
-	function toggleSubtask(task: TickbanTask) {
-		void updater(task, getNextStatus(task.status));
-	}
-
 	return (
 		<Button
 			ref={ref}
@@ -180,65 +170,9 @@ export function Card(props: CardProps) {
 
 			<div class="tb-card-text">{props.task.text}</div>
 
-			<Show when={subtasks().length}>
-				<div class="tb-card-subtasks">
-					<For each={subtasks()}>
-						{(subtask) => (
-							<label
-								class="tb-card-subtask-item"
-								onClick={(e) => e.stopPropagation()}
-							>
-								<input
-									type="checkbox"
-									checked={subtask.status !== " "}
-									tabIndex={-1}
-									data-task={subtask.status}
-									onClick={(e) => {
-										e.preventDefault();
-										toggleSubtask(subtask);
-									}}
-								/>
-								<span class="tb-card-subtask-text tb-ellipsis-text">
-									{subtask.text}
-								</span>
-							</label>
-						)}
-					</For>
-				</div>
-			</Show>
-
-			<Show when={props.task.tags.length > 0}>
-				<div class="tb-card-tags">
-					<For each={props.task.tags}>
-						{(tag) => (
-							<button
-								type="button"
-								class="tb-tag clickable-icon"
-								tabIndex={-1}
-								onClick={(e) => {
-									e.stopPropagation();
-									onTagClick(tag);
-								}}
-							>
-								<span class="tb-ellipsis-text">{tag}</span>
-							</button>
-						)}
-					</For>
-				</div>
-			</Show>
-
-			<Show when={settings.showFilePath && !filterPath()}>
-				<Button
-					class="tb-card-path-button text-icon-button"
-					tabIndex={-1}
-					onClick={(e) => {
-						e.stopPropagation();
-						setFilterPath(props.task.filePath);
-					}}
-				>
-					{props.task.filePath}
-				</Button>
-			</Show>
+			<CardSubTasks subtasks={subtasks()} />
+			<CardTags {...props} />
+			<CardFilePath {...props} />
 		</Button>
 	);
 }

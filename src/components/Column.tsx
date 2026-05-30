@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 import { createList } from "solid-list";
 import type { TickbanTask } from "task";
-import { Card } from "./Card";
+import { Card } from "./card/Card";
 import { Icon } from "./ui/Icon";
 
 interface ColumnProps {
