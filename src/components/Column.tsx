@@ -8,7 +8,7 @@ import {
 	untrack,
 } from "solid-js";
 import { createList } from "solid-list";
-import type { TickbanTask } from "../core/task-extractor";
+import type { TickbanTask } from "task";
 import { Card } from "./Card";
 import { Icon } from "./Icon";
 

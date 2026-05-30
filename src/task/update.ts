@@ -1,7 +1,7 @@
 import type { App } from "obsidian";
-import type { TickbanTask } from "./task-extractor";
+import type { TickbanTask } from "./types";
 
-export async function updateTaskInVault(
+export async function update(
 	app: App,
 	task: TickbanTask,
 	newStatus: TickbanTask["status"],

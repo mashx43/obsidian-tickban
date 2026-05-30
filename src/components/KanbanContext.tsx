@@ -1,5 +1,4 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { TaskStatus } from "core/task-status";
 import { type App, debounce } from "obsidian";
 import type { TickbanSettings } from "settings";
 import {
@@ -13,13 +12,14 @@ import {
 	useContext,
 } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
-import { REFRESH_EVENT } from "../constants";
 import {
 	compileGlob,
-	extractTasks,
+	extract,
+	type TaskStatus,
 	type TickbanTask,
-} from "../core/task-extractor";
-import { updateTaskInVault } from "../core/task-updater";
+	update,
+} from "task";
+import { REFRESH_EVENT } from "../constants";
 import { createTags } from "../primitives/create-tags";
 
 export type FilterPath = string | undefined;
@@ -88,7 +88,7 @@ export function KanbanProvider(props: KanbanProviderProps) {
 
 	async function loadTasks() {
 		const { app, settings } = props;
-		const extracted = await extractTasks(
+		const extracted = await extract(
 			app,
 			isIncluded(),
 			isExcluded(),
@@ -115,7 +115,7 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		// Actual vault update
 		try {
 			isUpdating = true;
-			await updateTaskInVault(props.app, task, newStatus);
+			await update(props.app, task, newStatus);
 		} finally {
 			isUpdating = false;
 		}

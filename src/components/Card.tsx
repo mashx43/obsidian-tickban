@@ -1,7 +1,6 @@
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
-import { revealTaskInFile } from "core/task-navigator";
 import { Menu } from "obsidian";
 import {
 	createMemo,
@@ -12,9 +11,8 @@ import {
 	Show,
 } from "solid-js";
 import { render } from "solid-js/web";
+import { getNextStatus, reveal, type TickbanTask } from "task";
 import { COLUMNS } from "../constants";
-import type { TickbanTask } from "../core/task-extractor";
-import { getNextStatus } from "../core/task-status";
 import Button from "./Button";
 import { Icon } from "./Icon";
 import { useKanban } from "./KanbanContext";
@@ -103,7 +101,7 @@ export function Card(props: CardProps) {
 			item
 				.setTitle("Open task in file")
 				.setIcon("external-link")
-				.onClick(() => revealTaskInFile(app, props.task)),
+				.onClick(() => reveal(app, props.task)),
 		);
 
 		menu.addItem((item) =>

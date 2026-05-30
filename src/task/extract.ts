@@ -1,17 +1,7 @@
 import type { App } from "obsidian";
 import pm from "picomatch";
-import { parseStatus, type TaskStatus } from "./task-status";
-
-export interface TickbanTask {
-	id: string; // `${file.path}:${line}`
-	filePath: string;
-	line: number;
-	text: string;
-	status: TaskStatus;
-	tags: string[];
-	mtime: number;
-	parentTaskId?: string;
-}
+import { parseStatus } from "./status";
+import type { TickbanTask } from "./types";
 
 export function compileGlob(
 	glob: string,
@@ -25,7 +15,7 @@ export function compileGlob(
 	return patterns.length ? pm(patterns) : defaultFn;
 }
 
-export async function extractTasks(
+export async function extract(
 	app: App,
 	isIncluded: (path: string) => boolean,
 	isExcluded: (path: string) => boolean,

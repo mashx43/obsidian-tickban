@@ -1,6 +1,6 @@
 import { For, type JSX, Show } from "solid-js";
+import type { TickbanTask } from "task";
 import { COLUMNS } from "../constants";
-import type { TickbanTask } from "../core/task-extractor";
 import { Column } from "./Column";
 import { useKanban } from "./KanbanContext";
 import { PathNavigation } from "./PathNavigation";
