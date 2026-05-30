@@ -191,6 +191,7 @@ export function Card(props: CardProps) {
 								<input
 									type="checkbox"
 									checked={subtask.status !== " "}
+									tabIndex={-1}
 									data-task={subtask.status}
 									onClick={(e) => {
 										e.preventDefault();
