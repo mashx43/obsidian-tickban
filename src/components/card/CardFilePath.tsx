@@ -19,7 +19,7 @@ export default function CardFilePath(props: Props): JSX.Element {
 					setFilterPath(props.task.filePath);
 				}}
 			>
-				{props.task.filePath}
+				<span class="tb-ellipsis-text">{props.task.filePath}</span>
 			</Button>
 		</Show>
 	);

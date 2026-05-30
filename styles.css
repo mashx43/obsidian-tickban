@@ -177,6 +177,7 @@
 	}
 
 	.tb-card-path-button {
+		max-width: stretch;
 		margin-top: var(--size-4-1);
 	}
 
