@@ -1,9 +1,9 @@
+import { Icon } from "components/ui/Icon";
+import { TagToken } from "components/ui/TagToken";
+import { useKanban } from "context/KanbanContext";
 import { For, onMount, Show } from "solid-js";
 import { createFilter } from "./create-filter";
 import { FilterSuggest } from "./FilterSuggest";
-import { Icon } from "./Icon";
-import { useKanban } from "./KanbanContext";
-import { TagToken } from "./TagToken";
 
 export interface FilterItem {
 	type: "tag" | "path";

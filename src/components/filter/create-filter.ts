@@ -1,5 +1,5 @@
+import type { KanbanContextValue } from "context/KanbanContext";
 import { type Accessor, batch, createMemo, createSignal } from "solid-js";
-import type { KanbanContextValue } from "./KanbanContext";
 import type { FilterItem } from "./TaskFilter";
 
 export function createFilter(context: KanbanContextValue) {

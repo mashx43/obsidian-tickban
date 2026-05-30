@@ -1,10 +1,10 @@
+import { useKanban } from "context/KanbanContext";
 import { For, type JSX, Show } from "solid-js";
 import type { TickbanTask } from "task";
 import { COLUMNS } from "../constants";
 import { Column } from "./Column";
-import { useKanban } from "./KanbanContext";
+import { TaskFilter } from "./filter/TaskFilter";
 import { PathNavigation } from "./PathNavigation";
-import { TaskFilter } from "./TaskFilter";
 
 export function KanbanBoard(): JSX.Element {
 	const { filteredTasks, filterPath, zoomTaskId } = useKanban();

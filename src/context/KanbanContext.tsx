@@ -20,9 +20,8 @@ import {
 	update,
 } from "task";
 import { REFRESH_EVENT } from "../constants";
-import { createTags } from "../primitives/create-tags";
-
-export type FilterPath = string | undefined;
+import { createNavigator, type FilterPath } from "./create-navigator";
+import { createTags } from "./create-tags";
 
 export interface KanbanContextValue {
 	app: App;
@@ -33,6 +32,7 @@ export interface KanbanContextValue {
 	zoomTaskId: Accessor<string | undefined>;
 	setZoomTaskId: (id: string | undefined) => void;
 	zoomTask: Accessor<TickbanTask | undefined>;
+	goBack: () => void;
 	tagStore: Record<string, boolean>;
 	setTagStore: SetStoreFunction<Record<string, boolean>>;
 	activeTags: Accessor<string[]>;
@@ -65,19 +65,12 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		setStore: setTagStore,
 		active: activeTags,
 	} = createTags(tasks);
-	const [filterPath, setFilterPath] = createSignal<FilterPath>();
-	const [zoomTaskId, setZoomTaskId] = createSignal<string>();
+	const navigator = createNavigator(tasks);
 	const [priorityTaskIds, setPriorityTaskIds] = createSignal<string[]>([]);
 	const priorityMap = createMemo(
 		() => new Map(priorityTaskIds().map((id, index) => [id, index])),
 	);
 	let isUpdating = false;
-
-	const zoomTask = createMemo(() => {
-		const id = zoomTaskId();
-		if (!id) return undefined;
-		return tasks().find((t) => t.id === id);
-	});
 
 	const isIncluded = createMemo(() =>
 		compileGlob(props.settings.includeGlob, () => true),
@@ -156,27 +149,13 @@ export function KanbanProvider(props: KanbanProviderProps) {
 
 	const filteredTasks = createMemo(() => {
 		const tags = activeTags();
-		const path = filterPath();
-		const zoomId = zoomTaskId();
+		const path = navigator.filterPath();
+		const zoomId = navigator.zoomTaskId();
 		const priorities = priorityMap();
-		const hasTags = !!tags.length;
 
-		const filtered = tasks().filter((task) => {
-			// Hierarchy filter:
-			// If zoomed, show only children of the zoomed task.
-			// If not zoomed, show only top-level tasks.
-			const matchesHierarchy = zoomId
-				? task.parentTaskId === zoomId
-				: !task.parentTaskId;
-			if (!matchesHierarchy) return false;
-
-			const matchesPath = !path || task.filePath === path;
-			if (!matchesPath) return false;
-
-			const matchesTags =
-				!hasTags || tags.every((tag) => task.tags.includes(tag));
-			return matchesTags;
-		});
+		const filtered = tasks().filter((task) =>
+			navigator.matchesScope(task, path, zoomId, tags),
+		);
 
 		if (!priorities.size) return filtered;
 
@@ -202,11 +181,7 @@ export function KanbanProvider(props: KanbanProviderProps) {
 		app: props.app,
 		tasks,
 		filteredTasks,
-		filterPath,
-		setFilterPath,
-		zoomTaskId,
-		setZoomTaskId,
-		zoomTask,
+		...navigator,
 		tagStore,
 		setTagStore,
 		activeTags,

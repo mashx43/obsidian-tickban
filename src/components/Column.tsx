@@ -10,7 +10,7 @@ import {
 import { createList } from "solid-list";
 import type { TickbanTask } from "task";
 import { Card } from "./Card";
-import { Icon } from "./Icon";
+import { Icon } from "./ui/Icon";
 
 interface ColumnProps {
 	status: TickbanTask["status"];
