@@ -9,7 +9,7 @@ interface Props {
 export function TagToken(props: Props): JSX.Element {
 	return (
 		<span class="tb-tag" role="listitem">
-			{props.tag}
+			<span class="tb-ellipsis-text">{props.tag}</span>
 			<button
 				type="button"
 				class="clickable-icon"

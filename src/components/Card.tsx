@@ -217,7 +217,7 @@ export function Card(props: CardProps) {
 									onTagClick(tag);
 								}}
 							>
-								{tag}
+								<span class="tb-ellipsis-text">{tag}</span>
 							</button>
 						)}
 					</For>
