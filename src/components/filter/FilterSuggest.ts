@@ -1,6 +1,13 @@
 import { AbstractInputSuggest, type App, prepareFuzzySearch } from "obsidian";
 import type { FilterItem } from "./TaskFilter";
 
+declare module "obsidian" {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	interface AbstractInputSuggest<T> {
+		suggestEl: HTMLElement;
+	}
+}
+
 interface SuggestItem extends FilterItem {
 	score: number;
 }
@@ -18,6 +25,7 @@ export class FilterSuggest extends AbstractInputSuggest<FilterItem> {
 		super(app, inputEl);
 		this.getItems = getItems;
 		this.selectCallback = onSelect;
+		this.suggestEl.addClass("tb-suggestion-container");
 	}
 
 	getSuggestions(query: string): FilterItem[] {

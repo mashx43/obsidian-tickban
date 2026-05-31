@@ -59,13 +59,6 @@
 		}
 	}
 
-	/* Ellipsis Text */
-	.tb-ellipsis-text {
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
 	/* --- Kanban Layout --- */
 
 	/* Board */
@@ -268,4 +261,17 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--size-2-1);
+}
+
+/* Ellipsis Text */
+.tb-ellipsis-text,
+.tb-suggestion-container .suggestion-item > span {
+	display: inline-block;
+	vertical-align: bottom;
+
+	max-width: 100%;
+
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
