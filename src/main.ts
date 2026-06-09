@@ -1,4 +1,4 @@
-import { Plugin, type WorkspaceLeaf } from "obsidian";
+import { debounce, Plugin, type WorkspaceLeaf } from "obsidian";
 import {
 	DEFAULT_SETTINGS,
 	type TickbanSettings,
@@ -66,12 +66,15 @@ export default class TickbanPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		this.refreshViews();
+	}
 
+	private refreshViews = debounce(() => {
 		const leaves = this.app.workspace.getLeavesOfType(TICKBAN_VIEW_TYPE);
 		for (const leaf of leaves) {
 			if (leaf.view instanceof TickbanView) {
 				leaf.view.refresh();
 			}
 		}
-	}
+	}, 500);
 }
