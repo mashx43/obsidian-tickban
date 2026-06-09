@@ -27,9 +27,16 @@ export function Column(props: ColumnProps) {
 
 	function onActiveChange(active: number | null): void {
 		if (active === null || isIgnore) return;
-		const el = listRef?.children[active] as HTMLElement | undefined;
-		if (el && document.activeElement !== el) {
-			el.focus();
+
+		const targetEl = listRef?.children[active] as HTMLElement | undefined;
+		if (!targetEl) return;
+
+		const activeEl = document.activeElement;
+		const isEditing =
+			activeEl instanceof HTMLInputElement || activeEl instanceof HTMLTextAreaElement;
+
+		if (!isEditing && activeEl !== targetEl) {
+			targetEl.focus();
 		}
 	}
 
