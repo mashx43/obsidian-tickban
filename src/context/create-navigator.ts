@@ -1,5 +1,5 @@
 import { type Accessor, createMemo, createSignal } from "solid-js";
-import type { TickbanTask } from "task";
+import type { TickbanTask } from "@/task";
 
 export type FilterPath = string | undefined;
 

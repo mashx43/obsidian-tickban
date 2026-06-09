@@ -1,7 +1,6 @@
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
-import { useKanban } from "context/KanbanContext";
 import { Menu } from "obsidian";
 import {
 	createMemo,
@@ -12,7 +11,8 @@ import {
 	Show,
 } from "solid-js";
 import { render } from "solid-js/web";
-import { reveal, type TickbanTask } from "task";
+import { useKanban } from "@/context/KanbanContext";
+import { reveal, type TickbanTask } from "@/task";
 import { COLUMNS } from "../../constants";
 import Button from "../ui/Button";
 import { Icon } from "../ui/Icon";

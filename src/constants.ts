@@ -1,4 +1,4 @@
-import { type TaskStatus } from "task";
+import type { TaskStatus } from "@/task";
 
 export const REFRESH_EVENT = "tickban-refresh-data";
 

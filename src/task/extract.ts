@@ -1,6 +1,6 @@
 import type { App } from "obsidian";
 import pm from "picomatch";
-import { TickbanSettings } from "settings";
+import type { TickbanSettings } from "@/settings";
 import { parseStatus } from "./status";
 import type { TickbanTask } from "./types";
 

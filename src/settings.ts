@@ -68,11 +68,11 @@ export class TickbanSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Exclude tags")
 			.setDesc(
-				"Tasks with these tags will be excluded. Support multiple tags (one per line, e.g. #exclude).",
+				"Tasks with these tags will be excluded. Support multiple tags (one per line, e.g. #Exclude).",
 			)
 			.addTextArea((text) => {
 				text
-					.setPlaceholder("#exclude")
+					.setPlaceholder("#Exclude")
 					.setValue(this.plugin.settings.excludeTags)
 					.onChange(async (value) => {
 						this.plugin.settings.excludeTags = value;

@@ -1,6 +1,6 @@
-import { useKanban } from "context/KanbanContext";
 import { For, type JSX, Show } from "solid-js";
-import type { TickbanTask } from "task";
+import { useKanban } from "@/context/KanbanContext";
+import type { TickbanTask } from "@/task";
 import { COLUMNS } from "../constants";
 import { Column } from "./Column";
 import { TaskFilter } from "./filter/TaskFilter";

@@ -1,6 +1,6 @@
-import { FilterPath } from "context/create-navigator";
-import { useKanban } from "context/KanbanContext";
 import type { JSX } from "solid-js";
+import type { FilterPath } from "@/context/create-navigator";
+import { useKanban } from "@/context/KanbanContext";
 import Button from "./ui/Button";
 import { Icon } from "./ui/Icon";
 

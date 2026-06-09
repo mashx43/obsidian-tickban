@@ -1,7 +1,7 @@
-import Button from "components/ui/Button";
-import { useKanban } from "context/KanbanContext";
 import { type JSX, Show } from "solid-js";
-import { TickbanTask } from "task";
+import Button from "@/components/ui/Button";
+import { useKanban } from "@/context/KanbanContext";
+import type { TickbanTask } from "@/task";
 
 interface Props {
 	task: TickbanTask;

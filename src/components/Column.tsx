@@ -8,7 +8,7 @@ import {
 	untrack,
 } from "solid-js";
 import { createList } from "solid-list";
-import type { TickbanTask } from "task";
+import type { TickbanTask } from "@/task";
 import { Card } from "./card/Card";
 import { Icon } from "./ui/Icon";
 
@@ -31,9 +31,10 @@ export function Column(props: ColumnProps) {
 		const targetEl = listRef?.children[active] as HTMLElement | undefined;
 		if (!targetEl) return;
 
-		const activeEl = document.activeElement;
+		const activeEl = activeDocument.activeElement;
 		const isEditing =
-			activeEl instanceof HTMLInputElement || activeEl instanceof HTMLTextAreaElement;
+			activeEl instanceof HTMLInputElement ||
+			activeEl instanceof HTMLTextAreaElement;
 
 		if (!isEditing && activeEl !== targetEl) {
 			targetEl.focus();

@@ -1,6 +1,6 @@
-import { useKanban } from "context/KanbanContext";
 import { For, type JSX, Show } from "solid-js";
-import { getNextStatus, TickbanTask } from "task";
+import { useKanban } from "@/context/KanbanContext";
+import { getNextStatus, type TickbanTask } from "@/task";
 
 interface Props {
 	subtasks: TickbanTask[];

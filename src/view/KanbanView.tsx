@@ -1,8 +1,8 @@
-import { KanbanBoard } from "components/KanbanBoard";
-import { KanbanProvider } from "context/KanbanContext";
-import type TickbanPlugin from "main";
 import { ItemView, type TFile, type WorkspaceLeaf } from "obsidian";
 import { render } from "solid-js/web";
+import { KanbanBoard } from "@/components/KanbanBoard";
+import { KanbanProvider } from "@/context/KanbanContext";
+import type TickbanPlugin from "@/main";
 import { REFRESH_EVENT } from "../constants";
 
 export const TICKBAN_VIEW_TYPE = "tickban-view";

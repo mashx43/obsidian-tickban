@@ -1,6 +1,5 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { type App, debounce } from "obsidian";
-import type { TickbanSettings } from "settings";
 import {
 	type Accessor,
 	createContext,
@@ -12,13 +11,14 @@ import {
 	useContext,
 } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
+import type { TickbanSettings } from "@/settings";
 import {
 	compileGlob,
 	extract,
 	type TaskStatus,
 	type TickbanTask,
 	update,
-} from "task";
+} from "@/task";
 import { REFRESH_EVENT } from "../constants";
 import { createNavigator, type FilterPath } from "./create-navigator";
 import { createTags } from "./create-tags";

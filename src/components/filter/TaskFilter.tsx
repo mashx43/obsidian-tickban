@@ -1,7 +1,7 @@
-import { Icon } from "components/ui/Icon";
-import { TagToken } from "components/ui/TagToken";
-import { useKanban } from "context/KanbanContext";
 import { For, onMount, Show } from "solid-js";
+import { Icon } from "@/components/ui/Icon";
+import { TagToken } from "@/components/ui/TagToken";
+import { useKanban } from "@/context/KanbanContext";
 import { createFilter } from "./create-filter";
 import { FilterSuggest } from "./FilterSuggest";
 
