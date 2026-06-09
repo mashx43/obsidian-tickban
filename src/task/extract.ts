@@ -1,5 +1,6 @@
 import type { App } from "obsidian";
 import pm from "picomatch";
+import { TickbanSettings } from "settings";
 import { parseStatus } from "./status";
 import type { TickbanTask } from "./types";
 
@@ -17,15 +18,23 @@ export function compileGlob(
 
 export async function extract(
 	app: App,
+	settings: TickbanSettings,
 	isIncluded: (path: string) => boolean,
 	isExcluded: (path: string) => boolean,
-	hideDoneAfterDays: number,
 ): Promise<TickbanTask[]> {
 	const files = app.vault.getMarkdownFiles();
 
 	const tasks: TickbanTask[] = [];
 	const now = Date.now();
-	const thresholdMs = hideDoneAfterDays * 24 * 60 * 60 * 1000;
+	const thresholdMs = settings.hideDoneAfterDays * 24 * 60 * 60 * 1000;
+
+	const excludeTagsSet = new Set();
+	for (const line of settings.excludeTags.split("\n")) {
+		const trimmed = line.trim();
+		if (trimmed.length > 0) {
+			excludeTagsSet.add(trimmed);
+		}
+	}
 
 	for (const file of files) {
 		if (!isIncluded(file.path)) continue;
@@ -65,6 +74,10 @@ export async function extract(
 			for (const tag of tagMatches ?? []) {
 				tags.push(tag.trim());
 				text = text.replace(tag, "").trim();
+			}
+
+			if (tags.some((tag) => excludeTagsSet.has(tag))) {
+				continue;
 			}
 
 			const task: TickbanTask = {
