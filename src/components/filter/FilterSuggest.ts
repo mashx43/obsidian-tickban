@@ -2,7 +2,7 @@ import { AbstractInputSuggest, type App, prepareFuzzySearch } from "obsidian";
 import type { FilterItem } from "./TaskFilter";
 
 declare module "obsidian" {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars -- T is required here to avoid a linting error.
 	interface AbstractInputSuggest<T> {
 		suggestEl: HTMLElement;
 	}
