@@ -4,6 +4,7 @@ import type TickbanPlugin from "./main";
 export interface TickbanSettings {
 	includeGlob: string;
 	excludeGlob: string;
+	excludeTags: string;
 	showFilePath: boolean;
 	hideDoneAfterDays: number;
 }
@@ -11,6 +12,7 @@ export interface TickbanSettings {
 export const DEFAULT_SETTINGS: TickbanSettings = {
 	includeGlob: "**/*.md",
 	excludeGlob: "",
+	excludeTags: "",
 	showFilePath: true,
 	hideDoneAfterDays: 7,
 };
@@ -56,6 +58,24 @@ export class TickbanSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.excludeGlob)
 					.onChange(async (value) => {
 						this.plugin.settings.excludeGlob = value;
+						await this.plugin.saveSettings();
+					});
+
+				// @ts-ignore: fieldSizing is a new CSS property
+				text.inputEl.setCssStyles({ minWidth: "80px", fieldSizing: "content" });
+			});
+
+		new Setting(containerEl)
+			.setName("Exclude tags")
+			.setDesc(
+				"Tasks with these tags will be excluded. Support multiple tags (one per line, e.g. #exclude).",
+			)
+			.addTextArea((text) => {
+				text
+					.setPlaceholder("#exclude")
+					.setValue(this.plugin.settings.excludeTags)
+					.onChange(async (value) => {
+						this.plugin.settings.excludeTags = value;
 						await this.plugin.saveSettings();
 					});
 

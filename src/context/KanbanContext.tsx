@@ -81,12 +81,7 @@ export function KanbanProvider(props: KanbanProviderProps) {
 
 	async function loadTasks() {
 		const { app, settings } = props;
-		const extracted = await extract(
-			app,
-			isIncluded(),
-			isExcluded(),
-			settings.hideDoneAfterDays,
-		);
+		const extracted = await extract(app, settings, isIncluded(), isExcluded());
 		setTasks(extracted);
 	}
 
