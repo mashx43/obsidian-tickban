@@ -24,18 +24,20 @@ You don't need to consolidate tasks into a single file. Whether it's in a daily 
   - Change the task status (TODO, DOING, DONE).
 - **Flexible Filtering**:
   - Narrow down extraction targets using Glob patterns (e.g., excluding specific folders).
+  - Exclude tasks by tags (e.g., #exclude).
   - Automatically hide completed tasks based on the file's last modified date.
 
 ## Usage
 
 1. Enable the plugin.
 2. Open the board by clicking the ribbon icon (Kanban icon) in the sidebar, or by running `Tickban: Open kanban` from the command palette.
-3. If necessary, adjust `Include glob` and `Exclude glob` in the settings to define the scope of task collection.
+3. If necessary, adjust `Include glob`, `Exclude glob`, and `Exclude tags` in the settings to define the scope of task collection.
 
 ## Settings
 
 - **Include glob**: Pattern for files to include for task extraction (e.g., `**/*.md`).
 - **Exclude glob**: Pattern for files to exclude from extraction (e.g., `Templates/**`).
+- **Exclude tags**: Tasks with these tags will be excluded. Support multiple tags (one per line, e.g. #exclude).
 - **Show file path**: Whether to display the file path on task cards.
 - **Hide done tasks (days)**: Number of days after which completed tasks are hidden (set to 0 to always show).
 
